@@ -16,6 +16,7 @@ namespace Client
         private static Socket serverSocket;
         private static String id;
         private static Thread incomingDataThread;
+        private static Game game;
         #endregion
 
         #region Main Logic
@@ -44,6 +45,8 @@ namespace Client
 
             incomingDataThread = new Thread(IncomingDataTask);
             incomingDataThread.Start(serverSocket);
+
+            game = new Game();
         }
         #endregion
 
