@@ -10,7 +10,8 @@ namespace Client
 {
     class Game : GameWindow
     {
-        Texture2D texture;
+        Texture2D arenaTexture;
+        Texture2D backgroundTexture;
 
         /// <summary>
         /// Constructor
@@ -29,7 +30,8 @@ namespace Client
         {
             base.OnLoad(e);
 
-            texture = GraphicsTools.LoadTexture("rpgTile040.png");
+            arenaTexture = GraphicsTools.LoadTexture("LavaDirtArena.png");
+            backgroundTexture = GraphicsTools.LoadTexture("LavaBackground.png");
         }
 
         /// <summary>
@@ -50,23 +52,8 @@ namespace Client
             base.OnRenderFrame(e);
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
-            GL.Begin(PrimitiveType.Quads);
-
-            GL.TexCoord2(1, 1);
-            GL.Vertex2(-0.1f, -0.1f);
-
-            GL.TexCoord2(0, 1);
-            GL.Vertex2(+0.1f, -0.1f);
-
-            GL.TexCoord2(0, 0);
-            GL.Vertex2(+0.1f, +0.1f);
-
-            GL.TexCoord2(1, 0);
-            GL.Vertex2(-0.1f, +0.1f);
-            
-            GL.End();
+            GraphicsTemplates.RenderBackground(backgroundTexture);
+            GraphicsTemplates.RenderArena(0, 0, 1, arenaTexture);
 
             this.SwapBuffers();
         }
