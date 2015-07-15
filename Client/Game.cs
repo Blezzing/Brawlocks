@@ -102,11 +102,12 @@ namespace Client
         /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
-            GL.Viewport(0, 0, Width, Height);
+            double ratio = ((double)Width / (double)Height);
 
+            GL.Viewport(0, 0, Width, Height);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            GL.Ortho(-1.0, 1.0, -1.0, 1.0, 0.0, 4.0);
+            GL.Ortho(-ratio, ratio, -1.0, 1.0, 0.0, 1.0);
 
             base.OnResize(e);
         }
