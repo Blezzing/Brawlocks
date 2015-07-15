@@ -13,12 +13,19 @@ namespace Client
         Texture2D arenaTexture;
         Texture2D backgroundTexture;
 
+        View view;
+
+        double aspectRatio;
+
         /// <summary>
         /// Constructor
         /// </summary>
         public Game()
         {
             GL.Enable(EnableCap.Texture2D);
+
+            view = new View(Vector2.Zero, 1.0, 0.0);
+
             this.Run(60);
         }
         
@@ -30,7 +37,9 @@ namespace Client
         {
             base.OnLoad(e);
 
-            arenaTexture = GraphicsTools.LoadTexture("LavaDirtArena.png");
+            aspectRatio = ((double)Width / (double)Height);
+
+            arenaTexture = GraphicsTools.LoadTexture("StoneArena.png");
             backgroundTexture = GraphicsTools.LoadTexture("LavaBackground.png");
         }
 
@@ -43,6 +52,16 @@ namespace Client
             base.OnUpdateFrame(e);
         }
 
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            if (e.DeltaPrecise > 0)
+                view.zoom += 0.05;
+            else if (e.DeltaPrecise < 0)
+                view.zoom -= 0.05;
+        }
+
         /// <summary>
         /// Kaldes når en frame skal rendes
         /// </summary>
@@ -52,8 +71,13 @@ namespace Client
             base.OnRenderFrame(e);
 
             GL.Clear(ClearBufferMask.ColorBufferBit);
+
+            GL.LoadIdentity();
+            GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
+            view.ApplyTransform();
+            
             GraphicsTemplates.RenderBackground(backgroundTexture);
-            GraphicsTemplates.RenderArena(0, 0, 1, arenaTexture);
+            GraphicsTemplates.RenderArena(0, 0, 1.5, arenaTexture);
 
             this.SwapBuffers();
         }
@@ -89,12 +113,12 @@ namespace Client
         /// <param name="e"></param>
         protected override void OnResize(EventArgs e)
         {
-            double ratio = ((double)Width / (double)Height);
+            aspectRatio = ((double)Width / (double)Height);
 
             GL.Viewport(0, 0, Width, Height);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            GL.Ortho(-ratio, ratio, -1.0, 1.0, 0.0, 1.0);
+            GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
 
             base.OnResize(e);
         }
