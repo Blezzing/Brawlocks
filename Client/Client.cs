@@ -31,6 +31,7 @@ namespace Client
             try
             {
                 serverSocket.Connect(clientEndpoint);
+                Console.WriteLine("Connected to: " + clientEndpoint.Address.ToString());
             }
             catch (Exception)
             {
@@ -47,6 +48,7 @@ namespace Client
                 try
                 {
                     serverSocket.Connect(serverEndpoint);
+                    Console.WriteLine("Connected to: " + serverEndpoint.Address.ToString());
                     break;
                 }
                 catch (Exception ex)
