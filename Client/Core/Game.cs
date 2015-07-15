@@ -14,12 +14,15 @@ namespace Client
         Texture2D arenaTexture;
         Texture2D backgroundTexture;
         Texture2D cursorTexture;
+
         double mouseXPos = 0;
         double mouseYPos = 0;
 
         View view;
 
         double aspectRatio;
+
+        Stack<IState> gameStates;
         #endregion
         
         #region Constructor
@@ -29,6 +32,8 @@ namespace Client
         public Game()
         {
             GL.Enable(EnableCap.Texture2D);
+
+            gameStates.Push(new MainMenuState(this));
 
             view = new View(Vector2.Zero, 1.0, 0.0);
 
