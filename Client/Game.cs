@@ -12,6 +12,9 @@ namespace Client
     {
         Texture2D arenaTexture;
         Texture2D backgroundTexture;
+        Texture2D cursorTexture;
+        double mouseXPos = 0;
+        double mouseYPos = 0;
 
         View view;
 
@@ -41,6 +44,7 @@ namespace Client
 
             arenaTexture = GraphicsTools.LoadTexture("StoneArena.png");
             backgroundTexture = GraphicsTools.LoadTexture("LavaBackground.png");
+            cursorTexture = GraphicsTools.LoadTexture("Cursor.png");
         }
 
         /// <summary>
@@ -50,6 +54,14 @@ namespace Client
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+
+            mouseXPos = Mouse.X;
+            mouseYPos = Mouse.Y;
+
+            mouseXPos = ((mouseXPos / Width) * 2 * aspectRatio - aspectRatio);
+            mouseYPos = ((mouseYPos / Height) *2 - 1) * view.zoom;
+
+            Console.WriteLine("X: " + mouseXPos + " Y: " + mouseYPos);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -78,6 +90,8 @@ namespace Client
             
             GraphicsTemplates.RenderBackground(backgroundTexture);
             GraphicsTemplates.RenderArena(0, 0, 1.5, arenaTexture);
+
+            GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, cursorTexture);
 
             this.SwapBuffers();
         }
