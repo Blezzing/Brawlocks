@@ -22,25 +22,38 @@ namespace Client
         #region Main Logic
         public static void Main(string[] args)
         {
-            //TODO  make this better.
-            Console.WriteLine("Enter server IP: ");
-            
-            //TODO Verify this shit.
-            String ip = Console.ReadLine();
-
+            //Forbered socket
             serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPEndPoint ipe = new IPEndPoint(IPAddress.Parse(ip), 4852);
 
-            //TODO improve information
+            //Autoconnect to own ip, in case a server is hosted.
+            IPEndPoint clientEndpoint = new IPEndPoint(IPAddress.Parse(HelperFunctions.GetIP4Address()), 4852);
+            
+            try
+            {
+                serverSocket.Connect(clientEndpoint);
+            }
+            catch (Exception)
+            {
+            }
+
+            //Connect to another ip. (Needs sanitizing)
             while (!serverSocket.Connected)
             {
+                Console.WriteLine("Enter server IP: ");
+                String ip = Console.ReadLine();
+
+                IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(ip), 4852);
+
                 try
                 {
-                    serverSocket.Connect(ipe);
+                    serverSocket.Connect(serverEndpoint);
+                    break;
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.Message);
                 }
+                Console.WriteLine("Failed to connect to server, try again.");
             }
 
             incomingDataThread = new Thread(IncomingDataTask);
