@@ -51,9 +51,8 @@ namespace Client
                     Console.WriteLine("Connected to: " + serverEndpoint.Address.ToString());
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Console.WriteLine(ex.Message);
                 }
                 Console.WriteLine("Failed to connect to server, try again.");
             }
@@ -86,7 +85,7 @@ namespace Client
                     }
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 Console.WriteLine("Disconnected from server.");
             }            
