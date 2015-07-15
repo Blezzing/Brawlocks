@@ -78,20 +78,12 @@ namespace Client
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-<<<<<<< HEAD
 
             mouseXPos = Mouse.X;
             mouseYPos = Mouse.Y;
 
             mouseXPos = ((mouseXPos / Width) * 2 * aspectRatio - aspectRatio);
             mouseYPos = ((mouseYPos / Height) *2 - 1) * view.zoom;
-
-            Console.WriteLine("X: " + mouseXPos + " Y: " + mouseYPos);
-        }
-=======
->>>>>>> origin/master
-
-            //Gamelogic
         }
         
         /// <summary>
@@ -129,12 +121,9 @@ namespace Client
             GraphicsTemplates.RenderBackground(backgroundTexture);
             GraphicsTemplates.RenderArena(0, 0, 1.5, arenaTexture);
 
-<<<<<<< HEAD
             GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, cursorTexture);
 
-=======
             //Swapper buffers
->>>>>>> origin/master
             this.SwapBuffers();
         }
 
