@@ -13,11 +13,11 @@ namespace Client
         /// </summary>
         public Game()
         {
-
+            this.Run(60);
         }
         
         /// <summary>
-        /// Kaldes når vinduet er startet
+        /// Kaldes når vinduet er startet (Load textures, sounds etc.)
         /// </summary>
         /// <param name="e"></param>
         protected override void OnLoad(EventArgs e)
