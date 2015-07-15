@@ -30,7 +30,7 @@ namespace Client
 
         public void Update()
         {
-
+            //Lad objektet selv finde nyt data fra andre objekter her (som fx. player position)
         }
 
         public void ApplyTransform()
