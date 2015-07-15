@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
+using OpenTK;
+
 
 namespace Client
 {
-    class Game
+    class Game : GameWindow
     {
+        public Game()
+        { }
         //TODO add game here
     }
 }
