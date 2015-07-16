@@ -11,27 +11,24 @@ namespace Client
     class Game : GameWindow
     {
         #region Fields
-        Texture2D arenaTexture;
-        Texture2D backgroundTexture;
 
-        // Mouse stuff:
-        Texture2D cursorTexture;
+        public Dictionary<String, Texture2D> Textures = new Dictionary<String,Texture2D>();
+        public Dictionary<String, Object> Sounds = new Dictionary<String,Object>(); //Change this to a sound-type when created.
+        public Stack<IState> States = new Stack<IState>();
+
+        public double aspectRatio;
+        public View view; //Bør denne ikke være per state?
+
 
         double mouseXPos = 0;
         double mouseYPos = 0;
 
         //Player character stuff
-        Texture2D playerTexture;
         double playerXPos = 0;
         double playerYPos = 0;
         double playerSpeed = 1;
         PlayerControls playerControls = new PlayerControls("Userprefs.txt");
 
-        View view;
-
-        double aspectRatio;
-
-        Stack<IState> gameStates = new Stack<IState>();
         #endregion
         
         #region Constructor
@@ -43,7 +40,8 @@ namespace Client
             GL.Enable(EnableCap.Texture2D);                                                 //enable textures
             GL.Enable(EnableCap.Blend);                                                     //enable transparency
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  //sets up alpha scaling
-            gameStates.Push(new MainMenuState(this));
+
+            States.Push(new MainMenuState(this));
 
             view = new View(Vector2.Zero, 1.0, 0.0);
 
@@ -60,14 +58,10 @@ namespace Client
         {
             base.OnLoad(e);
 
-            //Calculate variable values
-            aspectRatio = ((double)Width / (double)Height);
+            UpdateAspectRatio();
 
-            //Load textures
-            arenaTexture = GraphicsTools.LoadTexture("StoneArena.png");
-            backgroundTexture = GraphicsTools.LoadTexture("LavaBackground.png");
-            cursorTexture = GraphicsTools.LoadTexture("Cursor.png");
-            playerTexture = GraphicsTools.LoadTexture("PlayerTemplate.png");
+            LoadTextures();
+            LoadSounds();
         }
 
         /// <summary>
@@ -78,8 +72,7 @@ namespace Client
         {
             base.OnResize(e);
 
-            //Recalculate aspect ratio for use in on render frame
-            aspectRatio = ((double)Width / (double)Height);
+            UpdateAspectRatio();
 
             //Ensure fitting viewport
             GL.Viewport(0, 0, Width, Height);
@@ -120,7 +113,7 @@ namespace Client
                 playerXPos += playerSpeed * e.Time;
             }
 
-            gameStates.Peek().OnUpdateFrame(e);
+            States.Peek().OnUpdateFrame(e);
         }
 
         /// <summary>
@@ -140,19 +133,19 @@ namespace Client
             view.ApplyTransform();
             
             //Tegner textures
-            GraphicsTemplates.RenderBackground(backgroundTexture);
-            GraphicsTemplates.RenderArena(0, 0, 1.5, arenaTexture);
+            GraphicsTemplates.RenderBackground(Textures["ArenaBackground"]);
+            GraphicsTemplates.RenderArena(0, 0, 1.5, Textures["ArenaFloor"]);
 
             //Render Player
-            GraphicsTemplates.RenderPlayer(playerXPos, playerYPos, playerTexture);
+            GraphicsTemplates.RenderPlayer(playerXPos, playerYPos, Textures["Player"]);
 
             //Render custom mouse cursor
-            GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, cursorTexture);
+            GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, Textures["Cursor"]);
 
             //Swapper buffers
             this.SwapBuffers();
 
-            gameStates.Peek().OnRenderFrame(e);
+            States.Peek().OnRenderFrame(e);
         }
 
         /// <summary>
@@ -163,7 +156,7 @@ namespace Client
         {
             base.OnMouseDown(e);
 
-            gameStates.Peek().OnMouseDown(e);
+            States.Peek().OnMouseDown(e);
         }
 
         /// <summary>
@@ -180,7 +173,7 @@ namespace Client
             else if (e.DeltaPrecise < 0)
                 view.zoom -= 0.05;
 
-            gameStates.Peek().OnMouseWheel(e);
+            States.Peek().OnMouseWheel(e);
         }
 
         /// <summary>
@@ -196,8 +189,25 @@ namespace Client
                 else
                     this.WindowState = WindowState.Fullscreen;
 
-            gameStates.Peek().OnKeyDown(e);
+            States.Peek().OnKeyDown(e);
         }
         #endregion
+        private void LoadTextures()
+        {
+            Textures.Add("ArenaFloor",GraphicsTools.LoadTexture("StoneArena.png"));
+            Textures.Add("ArenaBackground",GraphicsTools.LoadTexture("LavaBackground.png"));
+            Textures.Add("Cursor",GraphicsTools.LoadTexture("Cursor.png"));
+            Textures.Add("Player",GraphicsTools.LoadTexture("PlayerTemplate.png"));
+        }
+
+        private void LoadSounds()
+        {
+
+        }
+
+        private void UpdateAspectRatio()
+        {
+            aspectRatio = ((double)Width / (double)Height);
+        }
     }
 }
