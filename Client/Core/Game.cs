@@ -13,10 +13,19 @@ namespace Client
         #region Fields
         Texture2D arenaTexture;
         Texture2D backgroundTexture;
+
+        // Mouse stuff:
         Texture2D cursorTexture;
 
         double mouseXPos = 0;
         double mouseYPos = 0;
+
+        //Player character stuff
+        Texture2D playerTexture;
+        double playerXPos = 0;
+        double playerYPos = 0;
+        double playerSpeed = 1;
+        PlayerControls playerControls = new PlayerControls("Userprefs.txt");
 
         View view;
 
@@ -57,6 +66,7 @@ namespace Client
             arenaTexture = GraphicsTools.LoadTexture("StoneArena.png");
             backgroundTexture = GraphicsTools.LoadTexture("LavaBackground.png");
             cursorTexture = GraphicsTools.LoadTexture("Cursor.png");
+            playerTexture = GraphicsTools.LoadTexture("PlayerTemplate.png");
         }
 
         /// <summary>
@@ -84,11 +94,30 @@ namespace Client
         {
             base.OnUpdateFrame(e);
 
+            //Mouse location relative to screen
             mouseXPos = Mouse.X;
             mouseYPos = Mouse.Y;
-
             mouseXPos = ((mouseXPos / Width) * 2 * aspectRatio - aspectRatio);
             mouseYPos = ((mouseYPos / Height) *2 - 1) * view.zoom;
+            
+            //Player controls
+            var keyboardState = OpenTK.Input.Keyboard.GetState();
+            if (keyboardState[playerControls.MoveUp])
+            {
+                playerYPos += playerSpeed * e.Time;
+            }
+            if (keyboardState[playerControls.MoveDown])
+            {
+                playerYPos -= playerSpeed * e.Time;
+            }
+            if (keyboardState[playerControls.MoveLeft])
+            {
+                playerXPos -= playerSpeed * e.Time;
+            }
+            if (keyboardState[playerControls.MoveRight])
+            {
+                playerXPos += playerSpeed * e.Time;
+            }
         }
         
         /// <summary>
@@ -126,6 +155,10 @@ namespace Client
             GraphicsTemplates.RenderBackground(backgroundTexture);
             GraphicsTemplates.RenderArena(0, 0, 1.5, arenaTexture);
 
+            //Render Player
+            GraphicsTemplates.RenderPlayer(playerXPos, playerYPos, playerTexture);
+
+            //Render custom mouse cursor
             GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, cursorTexture);
 
             //Swapper buffers
