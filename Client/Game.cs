@@ -24,6 +24,7 @@ namespace Client
         double playerXPos = 0;
         double playerYPos = 0;
         double playerSpeed = 1;
+        PlayerControls playerControls = new PlayerControls("Userprefs.txt");
 
         View view;
 
@@ -96,19 +97,19 @@ namespace Client
             
             //Player controls
             var keyboardState = OpenTK.Input.Keyboard.GetState();
-            if (keyboardState[Key.Up])
+            if (keyboardState[playerControls.MoveUp])
             {
                 playerYPos += playerSpeed * e.Time;
             }
-            if (keyboardState[Key.Down])
+            if (keyboardState[playerControls.MoveDown])
             {
                 playerYPos -= playerSpeed * e.Time;
             }
-            if (keyboardState[Key.Left])
+            if (keyboardState[playerControls.MoveLeft])
             {
                 playerXPos -= playerSpeed * e.Time;
             }
-            if (keyboardState[Key.Right])
+            if (keyboardState[playerControls.MoveRight])
             {
                 playerXPos += playerSpeed * e.Time;
             }

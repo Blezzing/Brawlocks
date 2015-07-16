@@ -1,7 +1,10 @@
 ﻿Here you can rebind your keys! well, this should work at some point at least..
 
 -- Movement --
-Up: w
-Down: s
-Left: a
-Right: d
+UP:    "W"
+DOWN:  "S"
+LEFT:  "A"
+RIGHT: "D"
+
+Should add more keys once we know what the character should be able to do.
+TODO: Hotkeys for spells.
