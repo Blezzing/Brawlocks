@@ -31,7 +31,7 @@ namespace Client
 
         double aspectRatio;
 
-        Stack<IState> gameStates;
+        Stack<IState> gameStates = new Stack<IState>();
         #endregion
         
         #region Constructor
