@@ -1,0 +1,7 @@
+﻿Here you can rebind your keys! well, this should work at some point at least..
+
+-- Movement --
+Up: w
+Down: s
+Left: a
+Right: d

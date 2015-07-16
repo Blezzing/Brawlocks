@@ -63,5 +63,19 @@ namespace Client
 
             GL.End();
         }
+
+        public static void RenderPlayer(double x, double y, Texture2D tex)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, tex.ID);
+            double off = 0.2;
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(0, 0); GL.Vertex2(x, y);
+            GL.TexCoord2(1, 0); GL.Vertex2(x + off, y);
+            GL.TexCoord2(1, 1); GL.Vertex2(x + off, y - off);
+            GL.TexCoord2(0, 1); GL.Vertex2(x, y - off);
+
+            GL.End();
+        }
     }
 }
