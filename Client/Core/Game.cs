@@ -118,21 +118,8 @@ namespace Client
             {
                 playerXPos += playerSpeed * e.Time;
             }
-        }
-        
-        /// <summary>
-        /// Kaldes når mussehjulet drejes
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            base.OnMouseWheel(e);
 
-            //Changes the view for next OnRenderFrame
-            if (e.DeltaPrecise > 0)
-                view.zoom += 0.05;
-            else if (e.DeltaPrecise < 0)
-                view.zoom -= 0.05;
+            gameStates.Peek().OnUpdateFrame(e);
         }
 
         /// <summary>
@@ -163,6 +150,8 @@ namespace Client
 
             //Swapper buffers
             this.SwapBuffers();
+
+            gameStates.Peek().OnRenderFrame(e);
         }
 
         /// <summary>
@@ -172,6 +161,25 @@ namespace Client
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
+
+            gameStates.Peek().OnMouseDown(e);
+        }
+
+        /// <summary>
+        /// Kaldes når mussehjulet drejes
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            //Changes the view for next OnRenderFrame
+            if (e.DeltaPrecise > 0)
+                view.zoom += 0.05;
+            else if (e.DeltaPrecise < 0)
+                view.zoom -= 0.05;
+
+            gameStates.Peek().OnMouseWheel(e);
         }
 
         /// <summary>
@@ -180,16 +188,14 @@ namespace Client
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
-            //Afslut gamewindow
-            if (e.Key == Key.Escape)
-                this.Exit();
-
             //Skift mellem fullscreen og window mode
             if (e.Key == Key.F11)
                 if (this.WindowState == WindowState.Fullscreen)
                     this.WindowState = WindowState.Normal;
                 else
                     this.WindowState = WindowState.Fullscreen;
+
+            gameStates.Peek().OnKeyDown(e);
         }
         #endregion
     }
