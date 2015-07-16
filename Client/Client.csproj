@@ -52,6 +52,7 @@
     <Compile Include="Core\Client.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="GameStates\GameState.cs" />
+    <Compile Include="Core\PlayerControls.cs" />
     <Compile Include="Rendering\GraphicsTemplates.cs" />
     <Compile Include="Rendering\GraphicsTools.cs" />
     <Compile Include="GameStates\IState.cs" />
