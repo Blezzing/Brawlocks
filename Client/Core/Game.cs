@@ -40,8 +40,9 @@ namespace Client
         /// </summary>
         public Game()
         {
-            GL.Enable(EnableCap.Texture2D);
-
+            GL.Enable(EnableCap.Texture2D);                                                 //enable textures
+            GL.Enable(EnableCap.Blend);                                                     //enable transparency
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  //sets up alpha scaling
             gameStates.Push(new MainMenuState(this));
 
             view = new View(Vector2.Zero, 1.0, 0.0);
