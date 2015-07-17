@@ -8,6 +8,8 @@ namespace Client
 {
     public static class GraphicsTemplates
     {
+        public static Game currentGame;
+
         static double var = 0, difX, difY;
         public static void RenderBackground(Texture2D texture)
         {
@@ -50,16 +52,16 @@ namespace Client
             GL.End();
         }
 
-        public static void RenderMouse(double x, double y, Texture2D tex)
+        private static float renderMouseSize = 0.1f;
+        public static void RenderMouse(Vector2 position, Texture2D tex)
         {
             GL.BindTexture(TextureTarget.Texture2D, tex.ID);
-            double off = 0.2;
             GL.Begin(PrimitiveType.Quads);
 
-            GL.TexCoord2(0, 0);     GL.Vertex2(x, y);
-            GL.TexCoord2(1, 0);     GL.Vertex2(x + off, y);
-            GL.TexCoord2(1, 1);     GL.Vertex2(x + off, y - off);
-            GL.TexCoord2(0, 1);     GL.Vertex2(x, y - off);
+            GL.TexCoord2(0, 0); GL.Vertex2(position.X, position.Y);
+            GL.TexCoord2(1, 0); GL.Vertex2(position.X + renderMouseSize, position.Y);
+            GL.TexCoord2(1, 1); GL.Vertex2(position.X + renderMouseSize, position.Y - renderMouseSize);
+            GL.TexCoord2(0, 1); GL.Vertex2(position.X, position.Y - renderMouseSize);
 
             GL.End();
         }

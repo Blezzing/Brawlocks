@@ -7,7 +7,7 @@ using OpenTK.Input;
 
 namespace Client
 {
-    interface IState
+    public interface IState
     {
         //Have to render stuff
         void OnUpdateFrame(FrameEventArgs e);

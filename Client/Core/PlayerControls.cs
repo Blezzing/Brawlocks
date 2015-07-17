@@ -7,7 +7,7 @@ using OpenTK.Input;
 
 namespace Client
 {
-    class PlayerControls
+    public class PlayerControls
     {
         //Used to check bindings
         private char[] _alphabet      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();

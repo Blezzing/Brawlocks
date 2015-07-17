@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Client
 {
-    class View
+    public class View
     {
         public Vector2 position;
         /// <summary>

@@ -8,27 +8,38 @@ using OpenTK.Input;
 
 namespace Client
 {
-    class Game : GameWindow
+    public class Game : GameWindow
     {
         #region Fields
 
-        public Dictionary<String, Texture2D> Textures = new Dictionary<String,Texture2D>();
-        public Dictionary<String, Object> Sounds = new Dictionary<String,Object>(); //Change this to a sound-type when created.
+        //Shared content
+        public readonly Dictionary<String, Texture2D> Textures = new Dictionary<String,Texture2D>();
+        public readonly Dictionary<String, Object> Sounds = new Dictionary<String, Object>(); //Change this to a sound-type when created.
+        public PlayerControls playerControls = new PlayerControls("Userprefs.txt");
+
+        //constants
+        public readonly View GAME_VIEW = new View(Vector2.Zero, 1.0, 0.0);
+        public readonly View GUI_VIEW = new View(Vector2.Zero, 1.0, 0.0);
+        
+        //State-stack
         public Stack<IState> States = new Stack<IState>();
 
-        public double aspectRatio;
-        public View view; //Bør denne ikke være per state?
+        //Window related properties
+        public float aspectRatio;
+        private View currentView;
+        public View CurrentView
+        {
+            get { return currentView; }
+            set
+            {
+                GL.LoadIdentity();
+                GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
+                currentView = value;
+                currentView.ApplyTransform();
+            }
+        }
 
-
-        double mouseXPos = 0;
-        double mouseYPos = 0;
-
-        //Player character stuff
-        double playerXPos = 0;
-        double playerYPos = 0;
-        double playerSpeed = 1;
-        PlayerControls playerControls = new PlayerControls("Userprefs.txt");
-
+        Vector2 mousePos = new Vector2(0,0);
         #endregion
         
         #region Constructor
@@ -40,11 +51,11 @@ namespace Client
             GL.Enable(EnableCap.Texture2D);                                                 //enable textures
             GL.Enable(EnableCap.Blend);                                                     //enable transparency
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  //sets up alpha scaling
+            this.CursorVisible = false;                                                     //Fanger musen og gør den usynlig
 
-            States.Push(new MainMenuState(this));
-
-            view = new View(Vector2.Zero, 1.0, 0.0);
-
+            GraphicsTemplates.currentGame = this;
+            this.States.Push(new GameState(this));
+            this.currentView = this.GUI_VIEW;
             this.Run(60);
         }
         #endregion
@@ -73,11 +84,7 @@ namespace Client
             base.OnResize(e);
 
             UpdateAspectRatio();
-
-            //Ensure fitting viewport
             GL.Viewport(0, 0, Width, Height);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
         }
 
         /// <summary>
@@ -88,30 +95,7 @@ namespace Client
         {
             base.OnUpdateFrame(e);
 
-            //Mouse location relative to screen
-            mouseXPos = Mouse.X;
-            mouseYPos = Mouse.Y;
-            mouseXPos = ((mouseXPos / Width) * 2 * aspectRatio - aspectRatio);
-            mouseYPos = ((mouseYPos / Height) *2 - 1) * view.zoom;
-            
-            //Player controls
-            var keyboardState = OpenTK.Input.Keyboard.GetState();
-            if (keyboardState[playerControls.MoveUp])
-            {
-                playerYPos += playerSpeed * e.Time;
-            }
-            if (keyboardState[playerControls.MoveDown])
-            {
-                playerYPos -= playerSpeed * e.Time;
-            }
-            if (keyboardState[playerControls.MoveLeft])
-            {
-                playerXPos -= playerSpeed * e.Time;
-            }
-            if (keyboardState[playerControls.MoveRight])
-            {
-                playerXPos += playerSpeed * e.Time;
-            }
+            UpdateMouse();
 
             States.Peek().OnUpdateFrame(e);
         }
@@ -124,28 +108,27 @@ namespace Client
         {
             base.OnRenderFrame(e);
 
+            /////////////////////////////////////////////////////////////
+            // Fremgangsmåden her er følgende:                         //
+            // #1. Clear buffer                                        //
+            // #2. Sæt CurrentView                                     //
+            // #3. Tegn en mængde af ting, og gå til #2 eller #4.      //
+            // #4. Swap buffers                                        //
+            // #?. Profit.                                             //
+            /////////////////////////////////////////////////////////////
+
             //Tømmer buffer
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            //Opsætter grafisk rum
-            GL.LoadIdentity();
-            GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
-            view.ApplyTransform();
-            
-            //Tegner textures
-            GraphicsTemplates.RenderBackground(Textures["ArenaBackground"]);
-            GraphicsTemplates.RenderArena(0, 0, 1.5, Textures["ArenaFloor"]);
+            //Lad statet tegne
+            this.States.Peek().OnRenderFrame(e);
 
-            //Render Player
-            GraphicsTemplates.RenderPlayer(playerXPos, playerYPos, Textures["Player"]);
-
-            //Render custom mouse cursor
-            GraphicsTemplates.RenderMouse(mouseXPos, -mouseYPos, Textures["Cursor"]);
+            //Tegn mus
+            this.CurrentView = this.GUI_VIEW;
+            GraphicsTemplates.RenderMouse(mousePos, Textures["Cursor"]);
 
             //Swapper buffers
             this.SwapBuffers();
-
-            States.Peek().OnRenderFrame(e);
         }
 
         /// <summary>
@@ -167,12 +150,6 @@ namespace Client
         {
             base.OnMouseWheel(e);
 
-            //Changes the view for next OnRenderFrame
-            if (e.DeltaPrecise > 0)
-                view.zoom += 0.05;
-            else if (e.DeltaPrecise < 0)
-                view.zoom -= 0.05;
-
             States.Peek().OnMouseWheel(e);
         }
 
@@ -182,6 +159,8 @@ namespace Client
         /// <param name="e"></param>
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
+            base.OnKeyDown(e);
+
             //Skift mellem fullscreen og window mode
             if (e.Key == Key.F11)
                 if (this.WindowState == WindowState.Fullscreen)
@@ -207,7 +186,13 @@ namespace Client
 
         private void UpdateAspectRatio()
         {
-            aspectRatio = ((double)Width / (double)Height);
+            aspectRatio = Width / (float)Height;
+        }
+
+        private void UpdateMouse()
+        {
+            mousePos.X = ((Mouse.X / (float)Width) * 2 * (float)aspectRatio) - (float)aspectRatio;
+            mousePos.Y = -(((Mouse.Y / (float)Height) * 2) - 1);
         }
     }
 }
