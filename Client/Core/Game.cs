@@ -117,6 +117,8 @@ namespace Client
             // #?. Profit.                                             //
             /////////////////////////////////////////////////////////////
 
+            GL.LoadIdentity();
+            GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
             //Tømmer buffer
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
@@ -124,6 +126,8 @@ namespace Client
             this.States.Peek().OnRenderFrame(e);
 
             //Tegn mus
+            GL.LoadIdentity();
+            GL.Ortho(-aspectRatio, aspectRatio, -1.0, 1.0, 0.0, 1.0);
             this.CurrentView = this.GUI_VIEW;
             GraphicsTemplates.RenderMouse(mousePos, Textures["Cursor"]);
 
@@ -171,6 +175,8 @@ namespace Client
             States.Peek().OnKeyDown(e);
         }
         #endregion
+
+        #region Private methods
         private void LoadTextures()
         {
             Textures.Add("ArenaFloor",GraphicsTools.LoadTexture("StoneArena.png"));
@@ -194,5 +200,6 @@ namespace Client
             mousePos.X = ((Mouse.X / (float)Width) * 2 * (float)aspectRatio) - (float)aspectRatio;
             mousePos.Y = -(((Mouse.Y / (float)Height) * 2) - 1);
         }
+        #endregion
     }
 }
