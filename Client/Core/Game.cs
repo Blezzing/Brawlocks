@@ -54,7 +54,7 @@ namespace Client
             this.CursorVisible = false;                                                     //Fanger musen og gør den usynlig
 
             GraphicsTemplates.currentGame = this;
-            this.States.Push(new GameState(this));
+            this.States.Push(new MainMenuState(this));
             this.currentView = this.GUI_VIEW;
             this.Run(60);
         }

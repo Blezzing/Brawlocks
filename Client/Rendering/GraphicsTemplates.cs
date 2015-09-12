@@ -79,5 +79,18 @@ namespace Client
 
             GL.End();
         }
+
+        public static void RenderText(double x, double y, Texture2D tex)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, tex.ID);
+            GL.Begin(PrimitiveType.Quads);
+            float w = (float)tex.Width / 100;
+            float h = (float)tex.Height / 100;
+            GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
+            GL.TexCoord2(1f, 1f); GL.Vertex2(x+w, y);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(x+w, y+h);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y+h);
+            GL.End();
+        }
     }
 }
