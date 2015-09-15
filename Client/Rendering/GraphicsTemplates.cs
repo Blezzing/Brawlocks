@@ -52,7 +52,7 @@ namespace Client
             GL.End();
         }
 
-        private static float renderMouseSize = 0.1f;
+        private static float renderMouseSize = 0.1f; //Perfect spot!
         public static void RenderMouse(Vector2 position, Texture2D tex)
         {
             GL.BindTexture(TextureTarget.Texture2D, tex.ID);
@@ -92,5 +92,30 @@ namespace Client
             GL.TexCoord2(0f, 0f); GL.Vertex2(x, y+h);
             GL.End();
         }
+
+        public static void RenderButton(double x, double y, Texture2D tex)
+        {
+            //This is for separating text button edges - not rly used tho
+            float offset = 0.025f;       //Top left
+            float offsetBR = offset * 2; //Bottom right
+
+            //This is for the actual button
+            Texture2D texBut = new Texture2D();
+            GL.BindTexture(TextureTarget.Texture2D, texBut.ID);
+            GL.Color3(Color.LightSlateGray);
+            GL.Begin(PrimitiveType.Quads);
+            float w = (float)tex.Width / 100 + offset;
+            float h = (float)tex.Height / 100 + offset;
+            GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
+            GL.TexCoord2(1f, 1f); GL.Vertex2(x + w, y);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y + h);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y + h);
+            GL.End();
+            GL.Color3(Color.White); //This renders everything else normally?
+
+            //This is for the text
+            RenderText(x, y + offset, tex);
+        }
+
     }
 }

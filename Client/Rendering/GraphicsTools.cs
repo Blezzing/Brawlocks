@@ -63,6 +63,7 @@ namespace Client
             return new Texture2D(id, textPic.Width, textPic.Height);
         }
 
+        //Used by GenerateTextureFromText()
         private static Image DrawTextTexture(String text, Font font, Color textColor, Color backColor)
         {
             //Dummy bitmap
@@ -96,5 +97,6 @@ namespace Client
 
             return img;
         }
+
     }
 }

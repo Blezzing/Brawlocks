@@ -20,7 +20,7 @@ namespace Client
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
-            
+
         }
 
         public void OnRenderFrame(FrameEventArgs e)
@@ -29,18 +29,18 @@ namespace Client
             Texture2D texTitle = GraphicsTools.GenerateTextureFromText("-BRAWLOCKS-", font);
             GraphicsTemplates.RenderText(-1.2, 0.5, texTitle);
             Texture2D texJoin = GraphicsTools.GenerateTextureFromText("Join Game");
-            GraphicsTemplates.RenderText(-1, 0, texJoin);
+            GraphicsTemplates.RenderButton(-1, 0, texJoin);
             Texture2D texHost = GraphicsTools.GenerateTextureFromText("Host Game");
-            GraphicsTemplates.RenderText(-1, -0.2, texHost);
+            GraphicsTemplates.RenderButton(-1, -0.3, texHost);
             Texture2D texSettings = GraphicsTools.GenerateTextureFromText("Settings");
-            GraphicsTemplates.RenderText(-1, -0.4, texSettings);
+            GraphicsTemplates.RenderButton(-1, -0.6, texSettings);
             Texture2D texExit = GraphicsTools.GenerateTextureFromText("Exit");
-            GraphicsTemplates.RenderText(-1, -0.6, texExit);
+            GraphicsTemplates.RenderButton(-1, -0.9, texExit);
         }
 
         public void OnMouseDown(MouseButtonEventArgs e)
         {
-            
+
         }
 
         public void OnKeyDown(KeyboardKeyEventArgs e)
@@ -57,7 +57,7 @@ namespace Client
 
         public void OnMouseWheel(MouseWheelEventArgs e)
         {
-            
+
         }
     }
 }
