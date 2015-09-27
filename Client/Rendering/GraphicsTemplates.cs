@@ -86,14 +86,21 @@ namespace Client
             GL.Begin(PrimitiveType.Quads);
             float w = (float)tex.Width / 100;
             float h = (float)tex.Height / 100;
-            GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
-            GL.TexCoord2(1f, 1f); GL.Vertex2(x+w, y);
-            GL.TexCoord2(1f, 0f); GL.Vertex2(x+w, y+h);
-            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y+h);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y);
+            GL.TexCoord2(1f, 1f); GL.Vertex2(x + w, y - h);
+            GL.TexCoord2(0f, 1f); GL.Vertex2(x, y - h);
             GL.End();
         }
 
-        public static void RenderButton(double x, double y, Texture2D tex)
+        /*
+        GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
+            GL.TexCoord2(1f, 1f); GL.Vertex2(x + w, y);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y - h);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y - h);
+            */
+
+        public static void RenderButton(float x, float y, Texture2D tex, Color color)
         {
             //This is for separating text button edges - not rly used tho
             float offset = 0.025f;       //Top left
@@ -102,14 +109,16 @@ namespace Client
             //This is for the actual button
             Texture2D texBut = new Texture2D();
             GL.BindTexture(TextureTarget.Texture2D, texBut.ID);
-            GL.Color3(Color.LightSlateGray);
+            GL.Color3(color);
             GL.Begin(PrimitiveType.Quads);
             float w = (float)tex.Width / 100 + offset;
             float h = (float)tex.Height / 100 + offset;
+            //Console.WriteLine("Box x, y: " + x + ", " + y);
+            //Console.WriteLine("Flow w, h: " + w + ", " + h);
             GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
             GL.TexCoord2(1f, 1f); GL.Vertex2(x + w, y);
-            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y + h);
-            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y + h);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y - h);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y - h);
             GL.End();
             GL.Color3(Color.White); //This renders everything else normally?
 

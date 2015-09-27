@@ -11,31 +11,40 @@ namespace Client
     class MainMenuState : IState
     {
         Game game;
+        List<GuiButton> buttons = new List<GuiButton>();
 
         public MainMenuState(Game owner)
         {
             game = owner;
 
+            buttons.Add(new GuiButton("Join Game", -1f, 0.3f, delegate () { game.States.Push(new GameState(game)); }));
+            buttons.Add(new GuiButton("Host Game", -1f, 0f, delegate () { game.States.Push(new GameState(game)); }));
+            buttons.Add(new GuiButton("Settings", -1f, -0.3f, delegate () { Console.WriteLine("Nope"); }));
+            buttons.Add(new GuiButton("Exit Game", -1f, -0.6f, game.Close));
+
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
+            foreach (GuiButton butt in buttons)
+            {
+                butt.UpdateFunc(ref game.mousePos);
 
+            }
         }
 
         public void OnRenderFrame(FrameEventArgs e)
         {
+            //Old method - rendering the title
             Font font = new Font(FontFamily.GenericSansSerif, 20);
             Texture2D texTitle = GraphicsTools.GenerateTextureFromText("-BRAWLOCKS-", font);
-            GraphicsTemplates.RenderText(-1.2, 0.5, texTitle);
-            Texture2D texJoin = GraphicsTools.GenerateTextureFromText("Join Game");
-            GraphicsTemplates.RenderButton(-1, 0, texJoin);
-            Texture2D texHost = GraphicsTools.GenerateTextureFromText("Host Game");
-            GraphicsTemplates.RenderButton(-1, -0.3, texHost);
-            Texture2D texSettings = GraphicsTools.GenerateTextureFromText("Settings");
-            GraphicsTemplates.RenderButton(-1, -0.6, texSettings);
-            Texture2D texExit = GraphicsTools.GenerateTextureFromText("Exit");
-            GraphicsTemplates.RenderButton(-1, -0.9, texExit);
+            GraphicsTemplates.RenderText(-1.2, 0.9f, texTitle);
+            
+            //Render each button
+            foreach (GuiButton butt in buttons)
+            {
+                butt.RenderFunc();
+            }
         }
 
         public void OnMouseDown(MouseButtonEventArgs e)
@@ -48,10 +57,6 @@ namespace Client
             if (e.Key == Key.Enter)
             {
                 game.States.Push(new GameState(game));
-            }
-            if (e.Key == Key.Escape)
-            {
-                game.Close();
             }
         }
 

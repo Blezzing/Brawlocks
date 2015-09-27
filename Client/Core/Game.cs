@@ -39,7 +39,8 @@ namespace Client
             }
         }
 
-        Vector2 mousePos = new Vector2(0,0);
+        public Vector2 mousePos = new Vector2(0,0);
+
         #endregion
         
         #region Constructor
@@ -171,6 +172,11 @@ namespace Client
                     this.WindowState = WindowState.Normal;
                 else
                     this.WindowState = WindowState.Fullscreen;
+
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
 
             States.Peek().OnKeyDown(e);
         }
