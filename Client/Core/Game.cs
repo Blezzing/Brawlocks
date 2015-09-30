@@ -175,7 +175,13 @@ namespace Client
 
             if (e.Key == Key.Escape)
             {
-                this.Close();
+                States.Pop();
+
+                if (States.Count <= 0)
+                {
+                    this.Close();
+                    Environment.Exit(1);
+                }
             }
 
             States.Peek().OnKeyDown(e);

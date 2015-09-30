@@ -47,14 +47,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameStates\GameMenuState.cs" />
+    <Compile Include="GameStates\MainSettingsState.cs" />
     <Compile Include="GameStates\OptionsState.cs" />
     <Compile Include="GameStates\ShopState.cs" />
     <Compile Include="Core\Client.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="GameStates\GameState.cs" />
     <Compile Include="Core\PlayerControls.cs" />
-    <Compile Include="GuiButton.cs" />
-    <Compile Include="IGuiElement.cs" />
+    <Compile Include="GUI\GuiButton.cs" />
+    <Compile Include="GUI\GUICheckBox.cs" />
+    <Compile Include="GUI\IGuiElement.cs" />
     <Compile Include="Rendering\GraphicsTemplates.cs" />
     <Compile Include="Rendering\GraphicsTools.cs" />
     <Compile Include="GameStates\IState.cs" />

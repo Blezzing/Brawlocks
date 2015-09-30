@@ -10,6 +10,7 @@ namespace Client
     interface IGuiElement
     {
         void UpdateFunc();
+        void UpdateFunc(ref Vector2 mouse);
         void RenderFunc();
     }
 }

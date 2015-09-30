@@ -19,11 +19,11 @@ namespace Client
         float x;
         float y;
         Texture2D tex;
-        int lol = 0;
         Color colorInactive = Color.LightGray;
         Color colorHover = Color.Yellow;
         Color colorOnRender;
         Action onClickLol;
+        bool wasMousePressed = false;
 
         public GuiButton(string text, float xPos, float yPos, Action onClickAction)
         {
@@ -47,18 +47,23 @@ namespace Client
             if ((mousePos.X > x && mousePos.X < x + (tex.Width / 100f)) &&
                 (mousePos.Y < y && mousePos.Y > y - (tex.Height / 100f)))
             {
-                lol++;
-                Console.WriteLine("Button: " + txt + lol);
                 colorOnRender = colorHover;
 
                 if (Mouse.GetState()[MouseButton.Left])
                 {
-                    onClick();
+                    wasMousePressed = true;
                 }
             }
             else
             {
                 colorOnRender = colorInactive;
+                wasMousePressed = false;
+            }
+
+            if (wasMousePressed && !Mouse.GetState()[MouseButton.Left])
+            {
+                onClick();
+                wasMousePressed = false;
             }
         }
 

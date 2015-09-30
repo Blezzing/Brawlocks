@@ -93,13 +93,6 @@ namespace Client
             GL.End();
         }
 
-        /*
-        GL.TexCoord2(0f, 1f); GL.Vertex2(x, y);
-            GL.TexCoord2(1f, 1f); GL.Vertex2(x + w, y);
-            GL.TexCoord2(1f, 0f); GL.Vertex2(x + w, y - h);
-            GL.TexCoord2(0f, 0f); GL.Vertex2(x, y - h);
-            */
-
         public static void RenderButton(float x, float y, Texture2D tex, Color color)
         {
             //This is for separating text button edges - not rly used tho
