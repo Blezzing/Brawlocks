@@ -14,7 +14,7 @@ namespace Client
 
         // So we know which menu the player is in
         enum settingStates { topLayer, generalLayer, audioLayer,
-                            videoLayer, controlsLayer };
+            videoLayer, controlsLayer };
         int currentLayer = (int)settingStates.topLayer;
 
         // The titles for each layer
@@ -25,11 +25,16 @@ namespace Client
         Texture2D texControlsTitle;
 
         //Lists of gui elements
-        List<GuiButton> topLayerButtons    = new List<GuiButton>();
-        List<IGuiElement> generalLayerGUI  = new List<IGuiElement>();
-        List<IGuiElement> audioLayerGUI    = new List<IGuiElement>();
-        List<IGuiElement> videoLayerGUI    = new List<IGuiElement>();
+        List<GuiButton> topLayerButtons = new List<GuiButton>();
+        List<IGuiElement> generalLayerGUI = new List<IGuiElement>();
+        List<IGuiElement> audioLayerGUI = new List<IGuiElement>();
+        List<IGuiElement> videoLayerGUI = new List<IGuiElement>();
         List<IGuiElement> controlsLayerGUI = new List<IGuiElement>();
+
+        // Used for the layout positioning
+        float[] layoutX = { -1f, 0.5f };
+        float[] layoutY = { 0.3f, 0f, -0.3f, -0.6f };
+
 
         public MainSettingsState(Game owner)
         {
@@ -47,20 +52,22 @@ namespace Client
 
                     /* Add the GUI elements to each layer and delegate functionality */
             //The top layer of the options menu:
-            topLayerButtons.Add(new GuiButton("General",  - 1f,  0.3f, delegate () { currentLayer = (int)settingStates.generalLayer; }));
-            topLayerButtons.Add(new GuiButton("Audio",    - 1f,    0f, delegate () { currentLayer = (int)settingStates.audioLayer; }));
-            topLayerButtons.Add(new GuiButton("Video",    - 1f, -0.3f, delegate () { currentLayer = (int)settingStates.videoLayer; }));
-            topLayerButtons.Add(new GuiButton("Controls", - 1f, -0.6f, delegate () { currentLayer = (int)settingStates.controlsLayer; }));
-            topLayerButtons.Add(new GuiButton("Return",   0.5f, -0.6f, delegate () { game.States.Pop(); }));
+            topLayerButtons.Add(new GuiButton("General",  layoutX[0], layoutY[0], delegate () { currentLayer = (int)settingStates.generalLayer; }));
+            topLayerButtons.Add(new GuiButton("Audio",    layoutX[0], layoutY[1], delegate () { currentLayer = (int)settingStates.audioLayer; }));
+            topLayerButtons.Add(new GuiButton("Video",    layoutX[0], layoutY[2], delegate () { currentLayer = (int)settingStates.videoLayer; }));
+            topLayerButtons.Add(new GuiButton("Controls", layoutX[0], layoutY[3], delegate () { currentLayer = (int)settingStates.controlsLayer; }));
+            topLayerButtons.Add(new GuiButton("Return",   layoutX[1], layoutY[3], delegate () { game.States.Pop(); }));
+            
+            generalLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
 
-            generalLayerGUI.Add(new GUICheckBox());
-            generalLayerGUI.Add (new GuiButton("Return", 0.5f, -0.6f, delegate () { currentLayer = (int)settingStates.topLayer; }));
+            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[0], false));
+            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[1], true));
+            audioLayerGUI.Add(new GUISlider(  layoutX[1], layoutY[2]));
+            audioLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
 
-            audioLayerGUI.Add   (new GuiButton("Return", 0.5f, -0.6f, delegate () { currentLayer = (int)settingStates.topLayer; }));
+            videoLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
 
-            videoLayerGUI.Add   (new GuiButton("Return", 0.5f, -0.6f, delegate () { currentLayer = (int)settingStates.topLayer; }));
-
-            controlsLayerGUI.Add(new GuiButton("Return", 0.5f, -0.6f, delegate () { currentLayer = (int)settingStates.topLayer; }));
+            controlsLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
         }
 
         public void OnKeyDown(KeyboardKeyEventArgs e)
@@ -101,6 +108,16 @@ namespace Client
 
                 case (int)settingStates.audioLayer:
                     GraphicsTemplates.RenderText(-0.7f, 0.9f, texAudioTitle);
+
+                    Texture2D texMusic = GraphicsTools.GenerateTextureFromText("Music");
+                    GraphicsTemplates.RenderText(layoutX[0], layoutY[0], texMusic);
+
+                    Texture2D texSound = GraphicsTools.GenerateTextureFromText("Sound FX");
+                    GraphicsTemplates.RenderText(layoutX[0], layoutY[1], texSound);
+
+                    Texture2D texVolume = GraphicsTools.GenerateTextureFromText("Volume");
+                    GraphicsTemplates.RenderText(layoutX[0], layoutY[2], texVolume);
+
                     foreach (IGuiElement elem in audioLayerGUI)
                     {
                         elem.RenderFunc();
