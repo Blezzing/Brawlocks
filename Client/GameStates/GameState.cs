@@ -48,7 +48,6 @@ namespace Client
                 Client.SendMovementToServer(newInputDirection);
                 oldInputDirection = newInputDirection;
             }
-
         }
 
         public void OnRenderFrame(FrameEventArgs e)

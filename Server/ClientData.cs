@@ -76,7 +76,7 @@ namespace Server
             }
             catch (SocketException)
             {
-                Console.WriteLine("A client disconnected");
+                Server.Informer.AddEventInformation("A client disconnected");
             }
         }
 
@@ -90,7 +90,7 @@ namespace Server
                 case (PacketType.Movement):
                     input.InputDirection.x = float.Parse(packet.stringData[0]);
                     input.InputDirection.y = float.Parse(packet.stringData[1]);
-                    Console.WriteLine("Movement pakke modtaget!");
+                    Server.Informer.AddEventInformation("Movement pakke modtaget!",2);
                     break;
             }
         }

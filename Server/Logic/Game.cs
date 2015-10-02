@@ -85,7 +85,6 @@ namespace Server.Logic
                     //Handle dc'ed client here.
                 }
             }
-            Console.WriteLine("Statepakker sendt! Size: " + p.ToBytes().Length);
         }
         
         /// <summary>
@@ -99,6 +98,7 @@ namespace Server.Logic
             while(true)
             {
                 while (currentElapsedTime.ElapsedMilliseconds < 10) { /*Do nothing*/ }
+
                 foreach(PlayerObject po in playerObjects)
                 {
                     po.Position += playerConnections[po].InputData.InputDirection * 0.0001f * currentElapsedTime.ElapsedMilliseconds;
