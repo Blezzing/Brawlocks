@@ -74,9 +74,11 @@ namespace Server
                     }
                 }
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
+                Server.clients.Remove(Server.clients.Last((c)=>{return c.clientSocket == cSocket;}));
                 Server.Informer.AddEventInformation("A client disconnected");
+                
             }
         }
 
