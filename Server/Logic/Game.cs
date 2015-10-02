@@ -76,7 +76,14 @@ namespace Server.Logic
             //Send packet to all clients.
             foreach (KeyValuePair<PlayerObject,ClientData> kvp in playerConnections)
             {
-                kvp.Value.clientSocket.Send(p.ToBytes());
+                try
+                {
+                    kvp.Value.clientSocket.Send(p.ToBytes());
+                }
+                catch (System.Net.Sockets.SocketException)
+                {
+                    //Handle dc'ed client here.
+                }
             }
             Console.WriteLine("Statepakker sendt! Size: " + p.ToBytes().Length);
         }
