@@ -48,7 +48,7 @@ namespace Client
 
         private void updatePointerX()
         {
-            pointerX = x + (w / sliderValue * 100f); // Scales the x coordinate down
+            pointerX = x + (w / 100f * sliderValue); // Scales the x coordinate down
             Console.WriteLine("pointerX: " + x + ", "+ pointerX);
         }
 

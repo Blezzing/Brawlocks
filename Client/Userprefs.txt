@@ -20,6 +20,6 @@ Here you can configure your settings!
  - Audio -
 MUSIC:	"OFF"
 SOUND:	"OFF"
-VOLUME: "20"
+VOLUME: "90"
 
  - Video -
