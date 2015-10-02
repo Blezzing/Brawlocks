@@ -50,11 +50,22 @@ namespace CommonLibrary
 
     /// <summary>
     /// Enum of all PacketTypes:
-    /// Registration: [0] Client ID                                |
-    /// Message:      [0] Message                                  |
-    /// Action:       [0] Number, [1] X-coord, [2] Y-coord         |
-    /// Movement:     [0] X-coord, [1] Y-coord                     |
-    /// GameState:    [0] I don't even                             |
+    /// Registration: [0] Client ID
+    /// 
+    /// Message:      [0] Message
+    /// 
+    /// Action:       [0] Number 
+    ///               [1] X-coord 
+    ///               [2] Y-coord
+    /// 
+    /// Movement:     [0] X-coord 
+    ///               [1] Y-coord
+    /// 
+    /// GameState:    [0] GameStatusObject
+    ///               [1] List of PlayerObjects (every element followed by '|')
+    ///               [2] List of StaticObjects (every element followed by '|')
+    ///               [3] List of DynamicObjects (every element followed by '|')
+    /// 
     /// Ping:         Empty
     /// </summary>
     public enum PacketType

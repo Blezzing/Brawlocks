@@ -66,8 +66,10 @@ namespace Client
             GL.End();
         }
 
-        public static void RenderPlayer(double x, double y, Texture2D tex)
+        public static void RenderPlayer(CommonLibrary.Vector2 position, Texture2D tex)
         {
+            float x = position.x;
+            float y = position.y;
             GL.BindTexture(TextureTarget.Texture2D, tex.ID);
             double off = 0.2;
             GL.Begin(PrimitiveType.Quads);

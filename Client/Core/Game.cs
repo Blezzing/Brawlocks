@@ -4,6 +4,7 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using CommonLibrary.Representation;
 
 
 namespace Client
@@ -16,6 +17,12 @@ namespace Client
         public readonly Dictionary<String, Texture2D> Textures = new Dictionary<String,Texture2D>();
         public readonly Dictionary<String, Object> Sounds = new Dictionary<String, Object>(); //Change this to a sound-type when created.
         public PlayerControls playerControls = new PlayerControls("Userprefs.txt");
+
+        //Game-Relevant Data
+        public GameStatusObject LocalGameStatusObject = new GameStatusObject();
+        public List<PlayerObject> LocalPlayerObjects = new List<PlayerObject>();
+        public List<StaticObject> LocalStaticObjects = new List<StaticObject>();
+        public List<DynamicObject> LocalDynamicObjects = new List<DynamicObject>();
 
         //constants
         public readonly View GAME_VIEW = new View(Vector2.Zero, 1.0, 0.0);
@@ -57,10 +64,9 @@ namespace Client
             GraphicsTemplates.currentGame = this;
             this.States.Push(new MainMenuState(this));
             this.currentView = this.GUI_VIEW;
-            this.Run(60);
         }
         #endregion
-
+        
         #region Overrides fra GameWindow
         /// <summary>
         /// Kaldes når vinduet er startet (Load textures, sounds etc.)

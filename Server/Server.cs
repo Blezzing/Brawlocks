@@ -14,9 +14,12 @@ namespace Server
     public static class Server
     {
         #region Fields
+        public const String ID = "server";
         private static Socket listenerSocket;
-        private static List<ClientData> clients;
-        private const String id = "server";
+        public static List<ClientData> clients;
+
+        public static List<Logic.Game> games = new List<Logic.Game>();
+
         #endregion
 
         #region Main Logic
@@ -32,6 +35,16 @@ namespace Server
 
             Thread listenerThread = new Thread(ListenerTask);
             listenerThread.Start();
+
+            //jesus fuck, fix this.
+            while (true)
+            {
+                if (clients.Count >= 1)
+                {
+                    games.Add(new Logic.Game(clients));
+                    games[0].GameLoop();
+                }
+            }
         }
         #endregion
         
@@ -40,15 +53,15 @@ namespace Server
         {
             while (true)
             {
-                listenerSocket.Listen(5); //experimental as fuck.
+                listenerSocket.Listen(5); //experimental as 5.
                 ClientData newClient = new ClientData(listenerSocket.Accept());
                 clients.Add(newClient);
 
-                Packet registrationPacket = new Packet(PacketType.Registration, id);
+                Packet registrationPacket = new Packet(PacketType.Registration, ID);
                 registrationPacket.stringData.Add(newClient.id);
                 newClient.clientSocket.Send(registrationPacket.ToBytes());
-
-                Console.WriteLine("A new client was added");
+                
+                Console.WriteLine("A new client was added! Registration packet size: " + registrationPacket.ToBytes().Length);
             }
         }
         #endregion
@@ -60,11 +73,6 @@ namespace Server
         }
 
         public static void SendMessageToClient(String Message, String recieverID)
-        {
-
-        }
-
-        public static void SendGameStateToClients(List<GameObject> gameObjects)
         {
 
         }

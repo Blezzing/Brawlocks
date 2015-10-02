@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using CommonLibrary.Representation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Client
         private static Socket serverSocket;
         private static String id;
         private static Thread incomingDataThread;
+        private static Thread gameLoopThread;
         private static Game game;
         #endregion
 
@@ -56,11 +58,14 @@ namespace Client
                 }
                 Console.WriteLine("Failed to connect to server, try again.");
             }
+            
+            game = new Game();
 
             incomingDataThread = new Thread(IncomingDataTask);
             incomingDataThread.Start(serverSocket);
 
-            game = new Game();
+            game.Run(60);
+
         }
         #endregion
 
@@ -68,6 +73,7 @@ namespace Client
         private static void IncomingDataTask(object serverSocket)
         {
             Socket sSocket = (Socket)serverSocket;
+
 
             byte[] buffer;
             int readBytes;
@@ -97,6 +103,37 @@ namespace Client
                 case (PacketType.Registration):
                     id = packet.stringData[0];
                     break;
+                case (PacketType.GameState):
+                    if (game != null)
+                    {
+                        game.LocalGameStatusObject = new GameStatusObject(packet.stringData[0]);
+
+                        List<string> sPlayerObjects = packet.stringData[1].Split('|').ToList();
+                        game.LocalPlayerObjects = new List<PlayerObject>();
+                        foreach (string s in sPlayerObjects)
+                            if (s.Length > 0)
+                                game.LocalPlayerObjects.Add(new PlayerObject(s));
+
+                        List<string> sStaticObjects = packet.stringData[2].Split('|').ToList();
+                        game.LocalStaticObjects = new List<StaticObject>();
+                        foreach (string s in sStaticObjects)
+                            if (s.Length > 0)
+                                game.LocalStaticObjects.Add(new StaticObject(s));
+
+                        List<string> sDynamicObjects = packet.stringData[3].Split('|').ToList();
+                        game.LocalDynamicObjects = new List<DynamicObject>();
+                        foreach (string s in sDynamicObjects)
+                            if (s.Length > 0)
+                                game.LocalDynamicObjects.Add(new DynamicObject(s));
+
+                        Console.WriteLine("Gamestate pakke håndteret!");
+                    }
+                    Console.WriteLine("Gamestate pakke modtaget!");
+                    break;
+                default:
+                    Console.WriteLine("wtf pakke modtaget!");
+                    break;
+
             }
         }
         #endregion
@@ -113,7 +150,7 @@ namespace Client
 
         public static void SendMovementToServer(Vector2 direction)
         {
-            Packet p = new Packet(PacketType.Action, id);
+            Packet p = new Packet(PacketType.Movement, id);
             p.stringData.Add(direction.x.ToString());
             p.stringData.Add(direction.y.ToString());
             serverSocket.Send(p.ToBytes());
@@ -131,7 +168,7 @@ namespace Client
             //Stopwatch ligcszqwer plox
             Packet p = new Packet(PacketType.Ping, id);
             serverSocket.Send(p.ToBytes());
-            return 0;
+            return 0;//to be ping.
         }
         #endregion
     }

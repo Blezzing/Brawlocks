@@ -11,37 +11,44 @@ namespace Client
     {
         Game game;
 
-        //clean this.
-        double playerXPos = 0;
-        double playerYPos = 0;
-        double playerSpeed = 1;
+        CommonLibrary.Vector2 oldInputDirection;
+        CommonLibrary.Vector2 newInputDirection;
 
         public GameState(Game owner)
         {
             game = owner;
+            oldInputDirection = new CommonLibrary.Vector2(0, 0);
+            newInputDirection = new CommonLibrary.Vector2(0, 0);
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
-            //clean this.
             //Player controls
             var keyboardState = OpenTK.Input.Keyboard.GetState();
+            newInputDirection = new CommonLibrary.Vector2(0, 0);
             if (keyboardState[game.playerControls.MoveUp])
             {
-                playerYPos += playerSpeed * e.Time;
+                newInputDirection.x += 1;
             }
             if (keyboardState[game.playerControls.MoveDown])
             {
-                playerYPos -= playerSpeed * e.Time;
+                newInputDirection.x -= 1;
             }
             if (keyboardState[game.playerControls.MoveLeft])
             {
-                playerXPos -= playerSpeed * e.Time;
+                newInputDirection.y -= 1;
             }
             if (keyboardState[game.playerControls.MoveRight])
             {
-                playerXPos += playerSpeed * e.Time;
+                newInputDirection.y += 1;
             }   
+
+            if (newInputDirection != oldInputDirection)
+            {
+                Client.SendMovementToServer(newInputDirection);
+                oldInputDirection = newInputDirection;
+            }
+
         }
 
         public void OnRenderFrame(FrameEventArgs e)
@@ -53,9 +60,12 @@ namespace Client
             GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]);
             GraphicsTemplates.RenderArena(0, 0, 1.5, game.Textures["ArenaFloor"]);
 
-            //Render Player
-            GraphicsTemplates.RenderPlayer(playerXPos, playerYPos, game.Textures["Player"]);
-
+            //Render Player, fix if.
+            if (game.LocalPlayerObjects.Count >= 1)
+            {
+                Console.WriteLine(game.LocalPlayerObjects[0].Position.x + ", " + game.LocalPlayerObjects[0].Position.y);
+                GraphicsTemplates.RenderPlayer(game.LocalPlayerObjects[0].Position, game.Textures["Player"]);
+            }
             //Tegn efter GUI_VIEW
             game.CurrentView = game.GUI_VIEW;
 
