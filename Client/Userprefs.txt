@@ -8,3 +8,18 @@ RIGHT: "D"
 
 Should add more keys once we know what the character should be able to do.
 TODO: Hotkeys for spells. 
+
+
+
+
+Here you can configure your settings!
+
+-- Settings --
+ - General -
+
+ - Audio -
+MUSIC:	"OFF"
+SOUND:	"OFF"
+VOLUME: "20"
+
+ - Video -

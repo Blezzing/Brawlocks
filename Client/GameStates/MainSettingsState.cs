@@ -40,6 +40,9 @@ namespace Client
         {
             game = owner;
 
+            UserSettings userSettings = new UserSettings();
+            userSettings.UpdateFromFile("Userprefs.txt");
+
             //Create and fill gui lists here
 
             // The titles for each layer
@@ -60,9 +63,9 @@ namespace Client
             
             generalLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
 
-            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[0], false));
-            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[1], true));
-            audioLayerGUI.Add(new GUISlider(  layoutX[1], layoutY[2]));
+            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[0], userSettings.MUSIC));
+            audioLayerGUI.Add(new GUICheckBox(layoutX[1], layoutY[1], userSettings.SOUND));
+            audioLayerGUI.Add(new GUISlider(  layoutX[1], layoutY[2], userSettings.VOLUME));
             audioLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
 
             videoLayerGUI.Add(new GuiButton("Return", layoutX[1], layoutY[3], delegate () { currentLayer = (int)settingStates.topLayer; }));
