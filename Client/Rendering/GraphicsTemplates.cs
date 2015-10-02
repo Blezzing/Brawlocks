@@ -34,6 +34,22 @@ namespace Client
             GL.End(); 
         }
 
+        public static void RenderMainMenuAlphaBox()
+        {
+            Texture2D tex = new Texture2D();
+
+            GL.BindTexture(TextureTarget.Texture2D, tex.ID);
+            GL.Begin(PrimitiveType.Quads);
+            GL.Color4(0, 0, 0, 0.7); // (R, G, B, Alpha);
+            //GL.Color3(Color.WhiteSmoke);
+            GL.TexCoord2(0f, 1f); GL.Vertex2(-1.25, 0.95f);
+            GL.TexCoord2(1f, 1f); GL.Vertex2(1.25, 0.95f);
+            GL.TexCoord2(1f, 0f); GL.Vertex2(1.25, -0.95f);
+            GL.TexCoord2(0f, 0f); GL.Vertex2(-1.25, -0.95f);
+            GL.End();
+            GL.Color3(Color.White);
+        }
+
         //TODO Optimize this
         public static void RenderArena(double centerX, double centerY, double radius, Texture2D texture)
         {

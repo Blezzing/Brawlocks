@@ -35,10 +35,15 @@ namespace Client
 
         public void OnRenderFrame(FrameEventArgs e)
         {
+            // Render background 
+            GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]); // Render lava
+            GraphicsTemplates.RenderMainMenuAlphaBox(); // Render "alpha box", so text is readable
+
+
             //Old method - rendering the title
             Font font = new Font(FontFamily.GenericSansSerif, 20);
             Texture2D texTitle = GraphicsTools.GenerateTextureFromText("-BRAWLOCKS-", font);
-            GraphicsTemplates.RenderText(-1.2, 0.9f, texTitle);
+            GraphicsTemplates.RenderText(-1.26, 0.9f, texTitle);
             
             //Render each button
             foreach (GuiButton butt in buttons)
