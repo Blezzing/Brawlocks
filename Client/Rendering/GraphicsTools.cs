@@ -88,8 +88,10 @@ namespace Client
             //Brush for the text
             Brush textBrush = new SolidBrush(textColor);
 
-            drawing.DrawString(text, font, textBrush, 0, 0);
+            drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 
+            drawing.DrawString(text, font, textBrush, 0, 1);
+            
             drawing.Save();
 
             textBrush.Dispose();
