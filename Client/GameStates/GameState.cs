@@ -5,6 +5,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using CommonLibrary;
+using CommonLibrary.Representation;
 
 namespace Client
 {
@@ -60,10 +61,9 @@ namespace Client
             GraphicsTemplates.RenderArena(0, 0, 1.5, game.Textures["ArenaFloor"]);
 
             //Render Player, fix if.
-            if (game.LocalPlayerObjects.Count >= 1)
+            foreach (PlayerObject po in game.LocalPlayerObjects)
             {
-                Console.WriteLine(game.LocalPlayerObjects[0].Position.x + ", " + game.LocalPlayerObjects[0].Position.y);
-                GraphicsTemplates.RenderPlayer(game.LocalPlayerObjects[0].Position, game.Textures["Player"]);
+                GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
             }
             //Tegn efter GUI_VIEW
             game.CurrentView = game.GUI_VIEW;

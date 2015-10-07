@@ -92,10 +92,7 @@ namespace Client
                         foreach (string s in sDynamicObjects)
                             if (s.Length > 0)
                                 game.LocalDynamicObjects.Add(new DynamicObject(s));
-
-                        Informer.AddEventInformation("Gamestate pakke håndteret!");
                     }
-                    Informer.AddEventInformation("Gamestate pakke modtaget!");
                     break;
                 default:
                     Informer.AddEventInformation("wtf pakke modtaget!");
