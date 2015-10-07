@@ -17,41 +17,59 @@ namespace Server
         #region Fields
         public const String ID = "server";
         private static Socket listenerSocket;
-        public static List<ClientData> clients = new List<ClientData>();
+        private static IPEndPoint ipe;
 
+        public static List<ClientData> clients = new List<ClientData>();
         public static List<Logic.Game> games = new List<Logic.Game>();
 
         public static ConsoleHandler Informer = new ConsoleHandler(null);
+
+        private static Thread listenerThread;
+        private static Thread gameManagerThread;
         #endregion
 
         #region Main Logic
         public static void Main(string[] args)
         {
-            Informer.AddBasicInformation("Server running on ip: ", HelperFunctions.GetIP4Address);
-            Informer.AddBasicInformation("Number of clients connected: " , () => {return clients.Count;} );
-            Informer.AddBasicInformation("Numbers of games running: ", () => {return games.Count;});
+            //Prepare data
+            SetupInformer();
+            SetupConnection();
 
-            listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            IPEndPoint ipe = new IPEndPoint(IPAddress.Parse(HelperFunctions.GetIP4Address()),4852);
-            listenerSocket.Bind(ipe);
-
-            Thread listenerThread = new Thread(ListenerTask);
-            listenerThread.Start();
-
-            //jesus fuck, fix this.
-            while (true)
-            {
-                if (clients.Count >= 1)
-                {
-                    games.Add(new Logic.Game(clients));
-                    games[0].GameLoop();
-                }
-            }
+            //Start performing logic
+            StartListenerThread();
+            StartGameManagerThread();
         }
         #endregion
-        
-        #region Connection Layer
+
+        #region Internal Methods
+        private static void SetupInformer()
+        {
+            Informer.AddBasicInformation("Server running on ip: ", HelperFunctions.GetIP4Address);
+            Informer.AddBasicInformation("Number of clients connected: ", () => { return clients.Count; });
+            Informer.AddBasicInformation("Numbers of games running: ", () => { return games.Count; });
+        }
+
+        private static void SetupConnection()
+        {
+            listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ipe = new IPEndPoint(IPAddress.Parse(HelperFunctions.GetIP4Address()), 4852);
+            listenerSocket.Bind(ipe);
+        }
+
+        private static void StartListenerThread()
+        {
+            listenerThread = new Thread(ListenerTask);
+            listenerThread.Start();
+        }
+
+        private static void StartGameManagerThread()
+        {
+            gameManagerThread = new Thread(GameManagerTask);
+            gameManagerThread.Start();
+        }
+        #endregion
+
+        #region Tasks
         private static void ListenerTask()
         {
             while (true)
@@ -65,6 +83,19 @@ namespace Server
                 newClient.clientSocket.Send(registrationPacket.ToBytes());
                 
                 Informer.AddEventInformation("A new client was added! Registration packet size: " + registrationPacket.ToBytes().Length);
+            }
+        }
+
+        private static void GameManagerTask()
+        {
+            while (true)
+            {
+                //fuck this
+                if (clients.Count >= 1)
+                {
+                    games.Add(new Logic.Game(clients));
+                    games[0].GameLoop();
+                }
             }
         }
         #endregion
