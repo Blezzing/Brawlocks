@@ -36,10 +36,7 @@ namespace Client
         {
             //Prepare data
             SetupInformer();
-
-            //Should be moved
-            ConnectToServer(HelperFunctions.GetIP4Address());
-
+            
             //Start performing logic
             StartIncomingDataThread();
             StartGameWindowThread();

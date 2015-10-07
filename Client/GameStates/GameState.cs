@@ -4,6 +4,7 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using CommonLibrary;
 
 namespace Client
 {
@@ -11,14 +12,13 @@ namespace Client
     {
         Game game;
 
-        CommonLibrary.Vector2 oldInputDirection;
-        CommonLibrary.Vector2 newInputDirection;
+        CommonLibrary.Vector2 oldInputDirection = new CommonLibrary.Vector2();
+        CommonLibrary.Vector2 newInputDirection = new CommonLibrary.Vector2();
 
         public GameState(Game owner)
         {
             game = owner;
-            oldInputDirection = new CommonLibrary.Vector2(0, 0);
-            newInputDirection = new CommonLibrary.Vector2(0, 0);
+            Client.ConnectToServer(HelperFunctions.GetIP4Address());
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
