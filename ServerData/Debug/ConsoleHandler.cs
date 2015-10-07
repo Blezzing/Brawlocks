@@ -14,6 +14,8 @@ namespace CommonLibrary.Debug
         private string debug = "";
         private Timer printTimer = new Timer(100);
 
+        private object internalLock = new object();
+
         /// <summary>
         /// Set up with information to show, explaining string, and value in a tuple.
         /// </summary>
@@ -56,13 +58,15 @@ namespace CommonLibrary.Debug
         /// <param name="timer">in seconds</param>
         public void AddEventInformation(string information, int timer)
         {
-            string str = information;
-            while (events.ContainsKey(str))
+            lock (internalLock)
             {
-                str = "_" + str;
+                string str = information;
+                while (events.ContainsKey(str))
+                {
+                    str = "_" + str;
+                }
+                events.Add(str, new Tuple<DateTime, int>(DateTime.Now, timer * 1000));
             }
-            events.Add(str, new Tuple<DateTime, int>(DateTime.Now, timer * 1000));
-            
         }
 
         /// <summary>
@@ -71,7 +75,10 @@ namespace CommonLibrary.Debug
         /// <param name="information"></param>
         public void AddEventInformation(string information)
         {
-            AddEventInformation(information, 5);
+            lock (internalLock)
+            {
+                AddEventInformation(information, 5);
+            }
         } 
 
         /// <summary>
@@ -81,7 +88,10 @@ namespace CommonLibrary.Debug
         /// <param name="getter"></param>
         public void AddBasicInformation(String str, Func<Object> getter)
         {
-            basic.Add(new Tuple<String,Func<Object>>(str,getter));
+            lock (internalLock)
+            {
+                basic.Add(new Tuple<String, Func<Object>>(str, getter));
+            }
         }
 
         /// <summary>
@@ -115,7 +125,10 @@ namespace CommonLibrary.Debug
         /// <param name="debugString"></param>
         public void SetDebugString(string debugString)
         {
-            debug = debugString;
+            lock (internalLock)
+            {
+                debug = debugString;
+            }
         }
         
         /// <summary>
@@ -123,7 +136,10 @@ namespace CommonLibrary.Debug
         /// </summary>
         public void ResetDebugString()
         {
-            debug = "";
+            lock (internalLock)
+            {
+                debug = "";
+            }
         }
     }
 }
