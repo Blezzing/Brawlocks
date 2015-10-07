@@ -16,7 +16,6 @@ namespace Server
     public static class Server
     {
         #region Fields
-
         //Threads
         private static Thread listenerThread;
         private static Thread gameManagerThread;
@@ -38,7 +37,7 @@ namespace Server
         public static object gamesLock = new object();
 
         //Debug handler
-        public static ConsoleHandler Informer = new ConsoleHandler(null);
+        public static ConsoleHandler Informer = new ConsoleHandler();
 
         #endregion
 
@@ -63,7 +62,7 @@ namespace Server
         #region Internal Methods
         private static void SetupInformer()
         {
-            Informer.AddBasicInformation("Server running on ip: ", HelperFunctions.GetIP4Address);
+            Informer.AddBasicInformation("Server running at: ", HelperFunctions.GetIP4Address);
             Informer.AddBasicInformation("Number of clients connected: ", () => { return clients.Count; });
             Informer.AddBasicInformation("Numbers of games running: ", () => { return games.Count; });
         }

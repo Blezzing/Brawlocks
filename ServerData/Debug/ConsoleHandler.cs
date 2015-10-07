@@ -19,13 +19,8 @@ namespace CommonLibrary.Debug
         /// <summary>
         /// Set up with information to show, explaining string, and value in a tuple.
         /// </summary>
-        public ConsoleHandler(List<Tuple<String, Func<Object>>> information)
+        public ConsoleHandler()
         {
-            if (information != null)
-            { 
-                basic = information; 
-            }
-
             printTimer.Elapsed += printTimer_Elapsed;
             printTimer.Start();
         }

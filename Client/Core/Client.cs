@@ -1,5 +1,6 @@
 ﻿using CommonLibrary;
 using CommonLibrary.Representation;
+using CommonLibrary.Debug;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,92 +14,61 @@ namespace Client
 {
     public static class Client
     {
-        #region Private Fields
-        private static Socket serverSocket;
-        private static String id;
+        #region Fields
+        //Threads
         private static Thread incomingDataThread;
-        private static Thread gameLoopThread;
+        private static Thread gameWindowThread;
+
+        //Connection fields
+        private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static String id = "";
+
+        //Game field
         private static Game game;
+        
+        //Debug handler
+        public static ConsoleHandler Informer = new ConsoleHandler();
+
         #endregion
 
         #region Main Logic
         public static void Main(string[] args)
         {
-            //Forbered socket
-            serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            //Prepare data
+            SetupInformer();
 
-            //Autoconnect to own ip, in case a server is hosted.
-            IPEndPoint clientEndpoint = new IPEndPoint(IPAddress.Parse(HelperFunctions.GetIP4Address()), 4852);
-            
-            try
-            {
-                serverSocket.Connect(clientEndpoint);
-                Console.WriteLine("Connected to: " + clientEndpoint.Address.ToString());
-            }
-            catch (Exception)
-            {
-            }
+            //Should be moved
+            ConnectToServer(HelperFunctions.GetIP4Address());
 
-            //Connect to another ip. (Needs sanitizing)
-            while (!serverSocket.Connected)
-            {
-                Console.WriteLine("Enter server IP: ");
-                String ip = Console.ReadLine();
-
-                IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(ip), 4852);
-
-                try
-                {
-                    serverSocket.Connect(serverEndpoint);
-                    Console.WriteLine("Connected to: " + serverEndpoint.Address.ToString());
-                    break;
-                }
-                catch (Exception)
-                {
-                }
-                Console.WriteLine("Failed to connect to server, try again.");
-            }
-            
-            game = new Game();
-
-            incomingDataThread = new Thread(IncomingDataTask);
-            incomingDataThread.Start(serverSocket);
-
-            game.Run(60);
-
+            //Start performing logic
+            StartIncomingDataThread();
+            StartGameWindowThread();
         }
         #endregion
 
-        #region Connection Layer
-        private static void IncomingDataTask(object serverSocket)
+        #region Internal Methods
+        private static void SetupInformer()
         {
-            Socket sSocket = (Socket)serverSocket;
-
-
-            byte[] buffer;
-            int readBytes;
-
-            try
-            {    
-                while (true)
-                {                   
-                    buffer = new byte[sSocket.SendBufferSize];
-                    readBytes = sSocket.Receive(buffer);
-
-                    if (readBytes > 0)
-                    {
-                        DataManager(new Packet(buffer));
-                    }
-                }
-            }
-            catch (SocketException)
-            {
-                Console.WriteLine("Disconnected from server.");
-            }            
+            Informer.AddBasicInformation("Connection to server etablished: ", () => { return serverSocket.Connected;});
+            Informer.AddBasicInformation("Connected to server at: ", () => { return serverSocket.RemoteEndPoint; });
+            Informer.AddBasicInformation("Client ID: ", () => { return id; });
         }
-        private static void DataManager(Packet packet)
+
+        private static void StartIncomingDataThread()
         {
-            switch(packet.packetType)
+            incomingDataThread = new Thread(IncomingDataTask);
+            incomingDataThread.Start(serverSocket);
+        }
+
+        private static void StartGameWindowThread()
+        {
+            gameWindowThread = new Thread(GameWindowTask);
+            gameWindowThread.Start();
+        }
+
+        private static void DataUnpacker(Packet packet)
+        {
+            switch (packet.packetType)
             {
                 case (PacketType.Registration):
                     id = packet.stringData[0];
@@ -126,19 +96,79 @@ namespace Client
                             if (s.Length > 0)
                                 game.LocalDynamicObjects.Add(new DynamicObject(s));
 
-                        Console.WriteLine("Gamestate pakke håndteret!");
+                        Informer.AddEventInformation("Gamestate pakke håndteret!");
                     }
-                    Console.WriteLine("Gamestate pakke modtaget!");
+                    Informer.AddEventInformation("Gamestate pakke modtaget!");
                     break;
                 default:
-                    Console.WriteLine("wtf pakke modtaget!");
+                    Informer.AddEventInformation("wtf pakke modtaget!");
                     break;
 
             }
         }
         #endregion
 
-        #region Surface Layer
+        #region Tasks
+        private static void GameWindowTask()
+        {
+            game = new Game();
+            game.Run(60);
+        }
+
+        private static void IncomingDataTask(object serverSocket)
+        {
+            Socket socket = (Socket)serverSocket;
+
+            byte[] buffer;
+            int readBytes;
+
+            while (true)
+            {
+                while (!socket.Connected)
+                {
+                    /*wait for connection*/
+                }
+
+                try
+                {
+                    while (true)
+                    {
+                        buffer = new byte[socket.SendBufferSize];
+                        readBytes = socket.Receive(buffer);
+
+                        if (readBytes > 0)
+                        {
+                            DataUnpacker(new Packet(buffer));
+                        }
+                    }
+                }
+                catch (SocketException)
+                {
+                    Informer.AddEventInformation("Disconnected from server.");
+                }
+            }
+        }
+        #endregion
+
+        #region Public Methods
+
+        public static void ConnectToServer(string ip)
+        {
+            IPEndPoint serverEndpoint = new IPEndPoint(IPAddress.Parse(ip), 4852);
+
+            try
+            {
+                serverSocket.Connect(serverEndpoint);
+                Informer.AddEventInformation("Connected to: " + serverEndpoint.Address.ToString());
+            }
+            catch (Exception)
+            {
+                Informer.AddEventInformation("Failed to connect to server, try again.");
+            }
+        }
+        #endregion
+
+        #region Send Methods
         public static void SendActionToServer(int actionNumber, Vector2 position)
         {
             Packet p = new Packet(PacketType.Action, id);
@@ -161,14 +191,6 @@ namespace Client
             Packet p = new Packet(PacketType.Message, id);
             p.stringData.Add(message);
             serverSocket.Send(p.ToBytes());
-        }
-
-        public static int PingServer()
-        {
-            //Stopwatch ligcszqwer plox
-            Packet p = new Packet(PacketType.Ping, id);
-            serverSocket.Send(p.ToBytes());
-            return 0;//to be ping.
         }
         #endregion
     }
