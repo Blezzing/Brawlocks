@@ -100,11 +100,14 @@ namespace Client
         /// <param name="e"></param>
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            base.OnUpdateFrame(e);
+            if (this.Focused) // Only do logic when the game is actually in focus
+            {
+                base.OnUpdateFrame(e);
 
-            UpdateMouse();
+                UpdateMouse();
 
-            States.Peek().OnUpdateFrame(e);
+                States.Peek().OnUpdateFrame(e);
+            }
         }
 
         /// <summary>

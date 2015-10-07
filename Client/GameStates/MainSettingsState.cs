@@ -40,6 +40,7 @@ namespace Client
         {
             game = owner;
 
+            // Temp solution
             UserSettings userSettings = new UserSettings();
             userSettings.UpdateFromFile("Userprefs.txt");
 
