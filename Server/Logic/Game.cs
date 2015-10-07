@@ -88,9 +88,9 @@ namespace Server.Logic
         }
         
         /// <summary>
-        /// DOES NEVER END! Enter when everything is ready.
+        /// To be run from another thread when object is constructed.
         /// </summary>
-        public void GameLoop()
+        public void GameLoopTask()
         {
             currentElapsedTime.Start();
             updateClock.Start();

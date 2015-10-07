@@ -90,7 +90,7 @@ namespace Server
 
         private static void StartGameLoopThread(Game game)
         {
-            Thread newThread = new Thread(game.GameLoop);
+            Thread newThread = new Thread(game.GameLoopTask);
 
             lock(gameLoopThreads)
             {
@@ -180,5 +180,4 @@ namespace Server
         }
         #endregion
     }
-
 }
