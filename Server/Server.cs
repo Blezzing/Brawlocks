@@ -30,7 +30,7 @@ namespace Server
         private static Socket listenerSocket;
 
         //Public storage fields
-        public static List<ClientData> clients = new List<ClientData>();
+        public static List<Client> clients = new List<Client>();
         public static List<Game> games = new List<Game>();
 
         //Public storage fields locks
@@ -111,7 +111,7 @@ namespace Server
             while (true)
             {
                 //Prepare clientdata and set it to next Accepted connection (Blocks thread until one appears)
-                ClientData newClient = new ClientData(listenerSocket.Accept());
+                Client newClient = new Client(listenerSocket.Accept());
 
                 //Sends registration packet
                 Packet registrationPacket = new Packet(PacketType.Registration, ID);
@@ -134,15 +134,15 @@ namespace Server
         /// </summary>
         private static void GameManagerTask()
         {
-            List<ClientData> assignedClients = new List<ClientData>();
-            List<ClientData> unassignedClients = new List<ClientData>();
+            List<Client> assignedClients = new List<Client>();
+            List<Client> unassignedClients = new List<Client>();
 
             while (true)
             {
                 //Update list of unassigned clients
                 lock (clientsLock)
                 {
-                    foreach(ClientData client in clients)
+                    foreach(Client client in clients)
                     {
                         if (!assignedClients.Contains(client) && !unassignedClients.Contains(client))
                         {
@@ -155,14 +155,14 @@ namespace Server
                 if (unassignedClients.Count >= CLIENTS_PER_GAME)
                 {
                     //Takes the first clients and puts them in a list to prepare them for a game
-                    List<ClientData> clientsToAdd = new List<ClientData>();
+                    List<Client> clientsToAdd = new List<Client>();
                     for (int i = 0; i < CLIENTS_PER_GAME; i++)
                     {
                         clientsToAdd.Add(unassignedClients[i]);
                     }
 
                     //Moves the clients to assigned clients
-                    foreach(ClientData client in clientsToAdd)
+                    foreach(Client client in clientsToAdd)
                     {
                         assignedClients.Add(client);
                         unassignedClients.Remove(client);

@@ -18,7 +18,7 @@ namespace Server.Logic
         private List<DynamicObject> dynamicObjects = new List<DynamicObject>();
 
         //Sources of information
-        private Dictionary<PlayerObject, ClientData> playerConnections = new Dictionary<PlayerObject, ClientData>();
+        private Dictionary<PlayerObject, Client> playerConnections = new Dictionary<PlayerObject, Client>();
 
         //Variables for game logic
         private Stopwatch currentElapsedTime = new Stopwatch();
@@ -29,10 +29,10 @@ namespace Server.Logic
         /// Default constructor.
         /// </summary>
         /// <param name="players"></param>
-        public Game(List<ClientData> players)
+        public Game(List<Client> players)
         {
             //Link players to their connections
-            foreach(ClientData player in players)
+            foreach(Client player in players)
             { 
                 PlayerObject po = new PlayerObject();
                 playerConnections.Add(po,player);
@@ -74,7 +74,7 @@ namespace Server.Logic
             p.stringData.Add(sDynamicObjects);  
 
             //Send packet to all clients.
-            foreach (KeyValuePair<PlayerObject,ClientData> kvp in playerConnections)
+            foreach (KeyValuePair<PlayerObject,Client> kvp in playerConnections)
             {
                 try
                 {

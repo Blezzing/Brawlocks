@@ -11,7 +11,7 @@ using CommonLibrary;
 
 namespace Server
 {
-    public class ClientData
+    public class Client
     {
         #region Public Fields
         //Communication fields
@@ -24,14 +24,14 @@ namespace Server
         #endregion
 
         #region Constructors
-        public ClientData()
+        public Client()
         {
             this.clientThread = new Thread(IncomingDataTask);
             this.id = Guid.NewGuid().ToString();
 
             this.clientThread.Start(clientSocket);
         }
-        public ClientData(Socket clientSocket)
+        public Client(Socket clientSocket)
         {
             this.clientSocket = clientSocket;
             this.clientThread = new Thread(IncomingDataTask);
