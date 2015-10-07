@@ -33,15 +33,17 @@ namespace CommonLibrary.Debug
         private void printTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             List<String> toBeRemoved = new List<string>();
-
-            foreach (KeyValuePair<String, Tuple<DateTime, int>> kvp in events)
+            lock (internalLock)
             {
-                if (kvp.Value.Item1.AddMilliseconds(kvp.Value.Item2) < DateTime.Now)
-                    toBeRemoved.Add(kvp.Key);
-            }
-            foreach (string s in toBeRemoved)
-            {
-                events.Remove(s);
+                foreach (KeyValuePair<String, Tuple<DateTime, int>> kvp in events)
+                {
+                    if (kvp.Value.Item1.AddMilliseconds(kvp.Value.Item2) < DateTime.Now)
+                        toBeRemoved.Add(kvp.Key);
+                }
+                foreach (string s in toBeRemoved)
+                {
+                    events.Remove(s);
+                }
             }
             Print();
         }
@@ -94,23 +96,26 @@ namespace CommonLibrary.Debug
         /// </summary>
         private void Print()
         {
-            Console.Clear();
-            Console.WriteLine("Information: ");
-            foreach (Tuple<String, Func<Object>> t in basic)
+            lock (internalLock)
             {
-                Console.WriteLine(String.Format("{0,-40} {1,0}",t.Item1 , ((t.Item2() == null) ? "null" : t.Item2().ToString() ) ));
-            }
-            if (events.Count > 0)
-            {
-                Console.WriteLine("\nEvents: ");
-                foreach (KeyValuePair<String, Tuple<DateTime, int>> kvp in events)
+                Console.Clear();
+                Console.WriteLine("Information: ");
+                foreach (Tuple<String, Func<Object>> t in basic)
                 {
-                    Console.WriteLine(kvp.Key.TrimStart('_'));
+                    Console.WriteLine(String.Format("{0,-40} {1,0}", t.Item1, ((t.Item2() == null) ? "null" : t.Item2().ToString())));
                 }
-            }
-            if (debug != "")
-            {
-                Console.WriteLine("\nDebug: \n" + debug);
+                if (events.Count > 0)
+                {
+                    Console.WriteLine("\nEvents: ");
+                    foreach (KeyValuePair<String, Tuple<DateTime, int>> kvp in events)
+                    {
+                        Console.WriteLine(kvp.Key.TrimStart('_'));
+                    }
+                }
+                if (debug != "")
+                {
+                    Console.WriteLine("\nDebug: \n" + debug);
+                }
             }
         }
 
