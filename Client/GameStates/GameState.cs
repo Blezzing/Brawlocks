@@ -19,7 +19,7 @@ namespace Client
         public GameState(Game owner)
         {
             game = owner;
-            Client.ConnectToServer(HelperFunctions.GetIP4Address());
+			Client.ConnectToServer (HelperFunctions.GetIP4Address());
         }
 
         public void OnUpdateFrame(FrameEventArgs e)

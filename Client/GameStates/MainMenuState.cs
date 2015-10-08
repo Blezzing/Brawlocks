@@ -21,7 +21,7 @@ namespace Client
             buttons.Add(new GuiButton("Host Game", -1f, 0f, delegate () { game.States.Push(new GameState(game)); }));
             buttons.Add(new GuiButton("Settings", -1f, -0.3f, delegate () { game.States.Push(new MainSettingsState(game)); }));
             buttons.Add(new GuiButton("Exit Game", -1f, -0.6f, 
-                delegate () { game.Close(); Environment.Exit(1); }));
+                delegate () { Environment.Exit(1); }));
 
         }
 
