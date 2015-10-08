@@ -5,6 +5,7 @@ namespace Client.GameObjects
 {
     public class PlayerObject : AbstractPlayerObject
     {
+
         public PlayerObject()
         {
         }

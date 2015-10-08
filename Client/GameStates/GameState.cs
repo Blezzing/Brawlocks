@@ -70,6 +70,17 @@ namespace Client
 
         private void HandleExtrapolation()
         {
+            //Validate current idea
+            if (checkState != game.OldServerState)
+            {
+                lock(game.ServerStateLock)
+                {
+                    //Updates checkvalue
+                    checkState = game.OldServerState;
+
+                    //
+                }
+            }
         }
         #endregion
 
