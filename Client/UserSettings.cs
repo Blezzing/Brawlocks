@@ -55,6 +55,36 @@ namespace Client
         }
     }
 
+        public void GenerateNewUserpref(string docName)
+        {
+            string[] templateTextLines =
+            {
+                "Here you can rebind your keys! well, this should work at some point at least..",
+                " ",
+                "-- MOVEMENT --",
+                "UP:\t\"W\"",
+                "DOWN::\t\"S\"",
+                "LEFT:\t\"A\"",
+                "RIGHT:\t\"D\"",
+                " ",
+                " ",
+                "-- Settings --",
+                " - GENERAL -",
+                " ",
+                " - AUDIO -",
+                "MUSIC:\t\"ON\"",
+                "SOUND:\t\"ON\"",
+                "VOLUME:\t\"100\"",
+                "",
+                " - VIDEO -",
+                "",
+                "",
+                "END OF TEMPLATE"
+            };
+
+            System.IO.File.WriteAllLines(@""+docName+".txt", templateTextLines);
+        }
+
         public void UpdateFile(string userPrefDoc)
         {
             string[] lines = System.IO.File.ReadAllLines(userPrefDoc); //Puts each line into the array

@@ -16,7 +16,9 @@ namespace Client
         //Shared content
         public readonly Dictionary<String, Texture2D> Textures = new Dictionary<String,Texture2D>();
         public readonly Dictionary<String, Object> Sounds = new Dictionary<String, Object>(); //Change this to a sound-type when created.
-        public PlayerControls playerControls = new PlayerControls("Userprefs.txt");
+
+        UserSettings userSettings = new UserSettings();
+        public PlayerControls playerControls;
 
         //Game-Relevant Data
         public GameStatusObject LocalGameStatusObject = new GameStatusObject();
@@ -62,6 +64,16 @@ namespace Client
         /// </summary>
         public Game()
         {
+            try
+            {
+                playerControls = new PlayerControls("Userprefs.txt");
+            }
+            catch(Exception e)
+            {
+                userSettings.GenerateNewUserpref("Userprefs.txt");
+                playerControls = new PlayerControls("Userprefs.txt");
+            }
+
             GL.Enable(EnableCap.Texture2D);                                                 //enable textures
             GL.Enable(EnableCap.Blend);                                                     //enable transparency
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);  //sets up alpha scaling

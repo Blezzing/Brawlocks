@@ -40,9 +40,16 @@ namespace Client
         {
             game = owner;
 
-            // Temp solution
+            //Temp solution
             UserSettings userSettings = new UserSettings();
-            userSettings.UpdateFromFile("Userprefs.txt");
+            try
+            {
+                userSettings.UpdateFromFile("Userprefs.txt");
+            }
+            catch(Exception e)
+            {
+                userSettings.GenerateNewUserpref("Userprefs.txt");
+            }
 
             //Create and fill gui lists here
 
@@ -91,6 +98,10 @@ namespace Client
 
         public void OnRenderFrame(FrameEventArgs e)
         {
+            //Pretti backgroundz
+            GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]); // Render lava
+            GraphicsTemplates.RenderMainMenuAlphaBox(); // Render "alpha box", so text is readable
+
             //Render each element based the current layer
             switch (currentLayer)
             {
