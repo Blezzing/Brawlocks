@@ -24,6 +24,12 @@ namespace Client
         public List<StaticObject> LocalStaticObjects = new List<StaticObject>();
         public List<DynamicObject> LocalDynamicObjects = new List<DynamicObject>();
 
+		//Game-Relevant Data Locks
+		public object LocalGameStatusObjectLock = new object();
+		public object LocalPlayerObjectsLock = new object();
+		public object LocalStaticObjectsLock = new object();
+		public object LocalDynamicObjectsLock = new object();
+
         //constants
         public readonly View GAME_VIEW = new View(Vector2.Zero, 1.0, 0.0);
         public readonly View GUI_VIEW = new View(Vector2.Zero, 1.0, 0.0);

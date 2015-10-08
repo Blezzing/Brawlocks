@@ -70,30 +70,44 @@ namespace Client
                 case (PacketType.Registration):
                     id = packet.stringData[0];
                     break;
+
                 case (PacketType.GameState):
                     if (game != null)
                     {
-                        game.LocalGameStatusObject = new GameStatusObject(packet.stringData[0]);
+						lock (game.LocalGameStatusObjectLock) 
+						{
+							game.LocalGameStatusObject = new GameStatusObject (packet.stringData [0]);
+						}
 
                         List<string> sPlayerObjects = packet.stringData[1].Split('|').ToList();
-                        game.LocalPlayerObjects = new List<PlayerObject>();
-                        foreach (string s in sPlayerObjects)
-                            if (s.Length > 0)
-                                game.LocalPlayerObjects.Add(new PlayerObject(s));
+						lock (game.LocalPlayerObjectsLock) 
+						{
+							game.LocalPlayerObjects = new List<PlayerObject> ();
+							foreach (string s in sPlayerObjects)
+								if (s.Length > 0)
+									game.LocalPlayerObjects.Add (new PlayerObject (s));
+						}
 
-                        List<string> sStaticObjects = packet.stringData[2].Split('|').ToList();
-                        game.LocalStaticObjects = new List<StaticObject>();
-                        foreach (string s in sStaticObjects)
-                            if (s.Length > 0)
-                                game.LocalStaticObjects.Add(new StaticObject(s));
+						List<string> sStaticObjects = packet.stringData[2].Split('|').ToList();
+						lock (game.LocalStaticObjectsLock) 
+						{
+							game.LocalStaticObjects = new List<StaticObject> ();
+							foreach (string s in sStaticObjects)
+								if (s.Length > 0)
+									game.LocalStaticObjects.Add (new StaticObject (s));
+						}
 
-                        List<string> sDynamicObjects = packet.stringData[3].Split('|').ToList();
-                        game.LocalDynamicObjects = new List<DynamicObject>();
-                        foreach (string s in sDynamicObjects)
-                            if (s.Length > 0)
-                                game.LocalDynamicObjects.Add(new DynamicObject(s));
+						List<string> sDynamicObjects = packet.stringData[3].Split('|').ToList();
+						lock (game.LocalDynamicObjectsLock) 
+						{
+							game.LocalDynamicObjects = new List<DynamicObject> ();
+							foreach (string s in sDynamicObjects)
+								if (s.Length > 0)
+									game.LocalDynamicObjects.Add (new DynamicObject (s));
+						}
                     }
                     break;
+
                 default:
                     Informer.AddEventInformation("wtf pakke modtaget!");
                     break;

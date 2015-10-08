@@ -60,11 +60,13 @@ namespace Client
             GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]);
             GraphicsTemplates.RenderArena(0, 0, 1.5, game.Textures["ArenaFloor"]);
 
-            //Render Player, fix if.
-            foreach (PlayerObject po in game.LocalPlayerObjects)
-            {
-                GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
-            }
+			lock (game.LocalPlayerObjectsLock) 
+			{
+				foreach (PlayerObject po in game.LocalPlayerObjects) 
+				{
+					GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
+				}
+			}
             //Tegn efter GUI_VIEW
             game.CurrentView = game.GUI_VIEW;
 
