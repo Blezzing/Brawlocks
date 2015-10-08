@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,6 +45,10 @@
     <Compile Include="Logic\Game.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Logic\GameObjects\DynamicObject.cs" />
+    <Compile Include="Logic\GameObjects\GameStatusObject.cs" />
+    <Compile Include="Logic\GameObjects\PlayerObject.cs" />
+    <Compile Include="Logic\GameObjects\StaticObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -52,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServerData\Common Library.csproj">
-      <Project>{85afbda5-41e6-41e7-be89-9dc9d403cddc}</Project>
+      <Project>{85AFBDA5-41E6-41E7-BE89-9DC9D403CDDC}</Project>
       <Name>Common Library</Name>
     </ProjectReference>
   </ItemGroup>
@@ -64,4 +68,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Logic\GameObjects\" />
+  </ItemGroup>
 </Project>

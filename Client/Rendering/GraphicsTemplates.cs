@@ -114,7 +114,6 @@ namespace Client
         {
             //This is for separating text button edges - not rly used tho
             float offset = 0.025f;       //Top left
-            float offsetBR = offset * 2; //Bottom right
 
             //This is for the actual button
             Texture2D texBut = new Texture2D();

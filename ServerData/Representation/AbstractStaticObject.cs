@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary.Representation
 {
-    public class StaticObject
+    public abstract class AbstractStaticObject
     {
         public Vector2 Position
         {
@@ -20,12 +20,12 @@ namespace CommonLibrary.Representation
             }
         }
         
-        public StaticObject()
+        public AbstractStaticObject()
         {
             Position = new Vector2();
         }
 
-        public StaticObject(String source)
+        public AbstractStaticObject(String source)
         {
             string[] input = source.Split(' ');
             Position = new Vector2(float.Parse(input[0]), float.Parse(input[0]));

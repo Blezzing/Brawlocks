@@ -46,7 +46,7 @@ namespace Client
             {
                 userSettings.UpdateFromFile("Userprefs.txt");
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 userSettings.GenerateNewUserpref("Userprefs.txt");
             }

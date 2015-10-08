@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary.Representation
 {
-    public class GameStatusObject
+    public abstract class AbstractGameStatusObject
     {
-        public GameStatusObject()
+        public AbstractGameStatusObject()
         {
 
         }
 
-        public GameStatusObject(string source)
+        public AbstractGameStatusObject(string source)
         {
 
         }

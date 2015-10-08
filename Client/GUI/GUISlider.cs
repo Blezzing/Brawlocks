@@ -20,7 +20,7 @@ namespace Client
 
         // SliderPointer values
         float pointerX;
-        float pointerW = 0.08f;
+        //float pointerW = 0.08f;
         float pointerH = 0.1f;
         float pointerHalfW = 0.04f;
         
@@ -31,6 +31,7 @@ namespace Client
 
         public GUISlider(float xPos, float yPos) 
             : this(xPos, yPos, 100) { }
+
         public GUISlider(float xPos, float yPos, float setValue) 
         {
             x = xPos;

@@ -15,7 +15,7 @@ namespace Client
     {
         RectangleF rectangle;
         string txt = "Template";
-        Font fnt = new Font(FontFamily.GenericSansSerif, 10);
+        //fnt = new Font(FontFamily.GenericSansSerif, 10);
         float x;
         float y;
         Texture2D tex;

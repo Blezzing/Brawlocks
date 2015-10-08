@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary.Representation
 {
-    public class PlayerObject
+    public abstract class AbstractPlayerObject
     {
         public Vector2 Position = new Vector2();
-        public Vector2 Velocity;
+        public Vector2 Velocity = new Vector2();
 
-        public PlayerObject()
+        public AbstractPlayerObject()
         {
-            Position = new Vector2();
         }
 
-        public PlayerObject(String source)
+        public AbstractPlayerObject(String source)
         {
             string[] input = source.Split(' ');
             Position = new Vector2(float.Parse(input[1]), float.Parse(input[0]));

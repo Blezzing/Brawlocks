@@ -29,11 +29,20 @@ namespace CommonLibrary
             this.y = vector.y;
         }
 
-        public void Normalize()
+        public Vector2 Normalize()
         {
-            float l = (float)Math.Sqrt(((x * x) + (y * y)));
-            x /= l;
-            y /= l;
+            if (x != 0 || y != 0)
+            {
+                float l = (float)Math.Sqrt(((x * x) + (y * y)));
+                x /= l;
+                y /= l;
+
+                return new Vector2(x, y);
+            }
+            else
+            {
+                return new Vector2();
+            }
         }
 
         public static bool operator ==(Vector2 v1, Vector2 v2)

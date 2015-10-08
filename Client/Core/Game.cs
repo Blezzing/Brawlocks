@@ -4,7 +4,7 @@ using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using CommonLibrary.Representation;
+using Client.GameObjects;
 
 
 namespace Client
@@ -68,7 +68,7 @@ namespace Client
             {
                 playerControls = new PlayerControls("Userprefs.txt");
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 userSettings.GenerateNewUserpref("Userprefs.txt");
                 playerControls = new PlayerControls("Userprefs.txt");

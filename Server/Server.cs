@@ -36,6 +36,12 @@ namespace Server
         public static object clientsLock = new object();
         public static object gamesLock = new object();
 
+		//Private storage fields
+		private static List<Game> gamesToEnd = new List<Game>();
+
+		//Private storage fields locks
+		private static object gamesToEndLock = new object();
+
         //Debug handler
         public static ConsoleHandler Informer = new ConsoleHandler();
 
@@ -128,6 +134,14 @@ namespace Server
             }
         }
 
+		public static void EndGame(Game game)
+		{
+			lock (gamesToEndLock)
+			{
+				gamesToEnd.Add(game);
+			}
+		}
+
         /// <summary>
         /// Manages games, and assigns clients to them.
         /// </summary>
@@ -136,6 +150,7 @@ namespace Server
             List<Client> assignedClients = new List<Client>();
             List<Client> unassignedClients = new List<Client>();
 
+			List<Client> clientsToAdd = null;
             while (true)
             {
                 //Update list of unassigned clients
@@ -153,8 +168,9 @@ namespace Server
                 //Handles unassigned clients
                 if (unassignedClients.Count >= CLIENTS_PER_GAME)
                 {
-                    //Takes the first clients and puts them in a list to prepare them for a game
-                    List<Client> clientsToAdd = new List<Client>();
+                    //Prepare unassigned clients
+					clientsToAdd = new List<Client>();
+
                     for (int i = 0; i < CLIENTS_PER_GAME; i++)
                     {
                         clientsToAdd.Add(unassignedClients[i]);
@@ -175,6 +191,18 @@ namespace Server
                     }
                     StartGameLoopThread(game);
                 }
+
+				//Handles finished games
+				lock (gamesToEndLock)
+				{
+					foreach (Game game in gamesToEnd)
+					{
+						assignedClients.RemoveAll((c)=>{return game.Clients.Contains(c);});
+						gameLoopThreads[game].Abort();
+						gameLoopThreads.Remove(game);
+						games.Remove(game);
+					}
+				}
             }
         }
         #endregion

@@ -5,7 +5,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using CommonLibrary;
-using CommonLibrary.Representation;
+using Client.GameObjects;
 
 namespace Client
 {
@@ -19,7 +19,7 @@ namespace Client
         public GameState(Game owner)
         {
             game = owner;
-			Client.ConnectToServer (HelperFunctions.GetIP4Address());
+			Client.ConnectToServer(HelperFunctions.GetIP4Address());
         }
 
         public void OnUpdateFrame(FrameEventArgs e)

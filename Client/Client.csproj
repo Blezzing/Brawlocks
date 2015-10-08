@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -44,6 +40,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4">
+      <HintPath>..\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameStates\GameMenuState.cs" />
@@ -66,6 +65,10 @@
     <Compile Include="Rendering\Texture2D.cs" />
     <Compile Include="Rendering\View.cs" />
     <Compile Include="UserSettings.cs" />
+    <Compile Include="GameObjects\DynamicObject.cs" />
+    <Compile Include="GameObjects\GameStatusObject.cs" />
+    <Compile Include="GameObjects\PlayerObject.cs" />
+    <Compile Include="GameObjects\StaticObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -73,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServerData\Common Library.csproj">
-      <Project>{85afbda5-41e6-41e7-be89-9dc9d403cddc}</Project>
+      <Project>{85AFBDA5-41E6-41E7-BE89-9DC9D403CDDC}</Project>
       <Name>Common Library</Name>
     </ProjectReference>
   </ItemGroup>
@@ -123,4 +126,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="GameObjects\" />
+  </ItemGroup>
 </Project>

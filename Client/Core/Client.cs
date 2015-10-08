@@ -1,6 +1,6 @@
 ﻿using CommonLibrary;
-using CommonLibrary.Representation;
 using CommonLibrary.Debug;
+using Client.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,34 +76,48 @@ namespace Client
                     {
 						lock (game.LocalGameStatusObjectLock) 
 						{
-							game.LocalGameStatusObject = new GameStatusObject (packet.stringData [0]);
+							//game.LocalGameStatusObject = new GameStatusObject (packet.stringData [0]);
 						}
 
                         List<string> sPlayerObjects = packet.stringData[1].Split('|').ToList();
 						lock (game.LocalPlayerObjectsLock) 
 						{
 							game.LocalPlayerObjects = new List<PlayerObject> ();
-							foreach (string s in sPlayerObjects)
-								if (s.Length > 0)
-									game.LocalPlayerObjects.Add (new PlayerObject (s));
+                            foreach (string s in sPlayerObjects)
+                            {
+                                if (s.Length > 0)
+                                {
+                                    PlayerObject po = new PlayerObject(s);
+                                    game.LocalPlayerObjects.Add (po);
+                                    Informer.SetDebugString(po.Position.x.ToString());
+                                }
+                            }
 						}
 
 						List<string> sStaticObjects = packet.stringData[2].Split('|').ToList();
 						lock (game.LocalStaticObjectsLock) 
 						{
 							game.LocalStaticObjects = new List<StaticObject> ();
-							foreach (string s in sStaticObjects)
-								if (s.Length > 0)
-									game.LocalStaticObjects.Add (new StaticObject (s));
+                            foreach (string s in sStaticObjects)
+                            {
+                                if (s.Length > 0)
+                                {
+                                    //game.LocalStaticObjects.Add (new StaticObject (s));
+                                }
+                            }
 						}
 
 						List<string> sDynamicObjects = packet.stringData[3].Split('|').ToList();
 						lock (game.LocalDynamicObjectsLock) 
 						{
 							game.LocalDynamicObjects = new List<DynamicObject> ();
-							foreach (string s in sDynamicObjects)
-								if (s.Length > 0)
-									game.LocalDynamicObjects.Add (new DynamicObject (s));
+                            foreach (string s in sDynamicObjects)
+                            {
+                                if (s.Length > 0)
+                                {
+                                    //game.LocalDynamicObjects.Add (new DynamicObject (s));
+                                }
+                            }
 						}
                     }
                     break;

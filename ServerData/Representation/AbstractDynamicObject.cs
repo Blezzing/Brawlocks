@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary.Representation
 {
-    public class DynamicObject
+    public abstract class AbstractDynamicObject
     {
         public Vector2 Position
         {
@@ -20,12 +20,12 @@ namespace CommonLibrary.Representation
             }
         }
 
-        public DynamicObject()
+        public AbstractDynamicObject()
         {
             Position = new Vector2();
         }
 
-        public DynamicObject(String source)
+        public AbstractDynamicObject(String source)
         {
             string[] input = source.Split(' ');
             Position = new Vector2(float.Parse(input[0]), float.Parse(input[0]));
