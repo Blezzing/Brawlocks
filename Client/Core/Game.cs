@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics;
 using OpenTK.Input;
 using Client.GameObjects;
+using Client.Core;
 
 
 namespace Client
@@ -21,16 +23,10 @@ namespace Client
         public PlayerControls playerControls;
 
         //Game-Relevant Data
-        public GameStatusObject LocalGameStatusObject = new GameStatusObject();
-        public List<PlayerObject> LocalPlayerObjects = new List<PlayerObject>();
-        public List<StaticObject> LocalStaticObjects = new List<StaticObject>();
-        public List<DynamicObject> LocalDynamicObjects = new List<DynamicObject>();
-
-		//Game-Relevant Data Locks
-		public object LocalGameStatusObjectLock = new object();
-		public object LocalPlayerObjectsLock = new object();
-		public object LocalStaticObjectsLock = new object();
-		public object LocalDynamicObjectsLock = new object();
+        public ServerState NewServerState = new ServerState();
+        public ServerState MidServerState = new ServerState();
+        public ServerState OldServerState = new ServerState();
+        public object ServerStateLock = new object();
 
         //constants
         public readonly View GAME_VIEW = new View(Vector2.Zero, 1.0, 0.0);
@@ -60,7 +56,7 @@ namespace Client
         
         #region Constructor
         /// <summary>
-        /// Constructor
+        /// Constructor, add : base(1920, 1080, new GraphicsMode(32, 0, 0, 8)) for MSAA
         /// </summary>
         public Game()
         {

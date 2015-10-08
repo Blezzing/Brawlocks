@@ -19,7 +19,7 @@ namespace Client
         public GameState(Game owner)
         {
             game = owner;
-			Client.ConnectToServer(HelperFunctions.GetIP4Address());
+            Client.ConnectToServer(HelperFunctions.GetIP4Address());
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
@@ -60,9 +60,9 @@ namespace Client
             GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]);
             GraphicsTemplates.RenderArena(0, 0, 1.5, game.Textures["ArenaFloor"]);
 
-			lock (game.LocalPlayerObjectsLock) 
+			lock (game.ServerStateLock) 
 			{
-				foreach (PlayerObject po in game.LocalPlayerObjects) 
+				foreach (PlayerObject po in game.NewServerState.PlayerObjects) 
 				{
 					GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
 				}

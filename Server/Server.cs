@@ -23,7 +23,7 @@ namespace Server
 
         //Public constants
         public const String ID = "server";
-        public const int CLIENTS_PER_GAME = 2; 
+        public const int CLIENTS_PER_GAME = 1; 
 
         //Connection field
         private static Socket listenerSocket;

@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Client.Core;
 
 namespace Client
 {
@@ -53,8 +54,11 @@ namespace Client
 
         private static void StartIncomingDataThread()
         {
-            incomingDataThread = new Thread(IncomingDataTask);
-            incomingDataThread.Start(serverSocket);
+            if (incomingDataThread == null)
+            {
+                incomingDataThread = new Thread(IncomingDataTask);
+                incomingDataThread.Start(serverSocket);
+            }
         }
 
         private static void StartGameWindowThread()
@@ -74,51 +78,46 @@ namespace Client
                 case (PacketType.GameState):
                     if (game != null)
                     {
-						lock (game.LocalGameStatusObjectLock) 
-						{
-							//game.LocalGameStatusObject = new GameStatusObject (packet.stringData [0]);
-						}
+                        //Makes a new serverState
+                        ServerState tempState = new ServerState();
 
-                        List<string> sPlayerObjects = packet.stringData[1].Split('|').ToList();
-						lock (game.LocalPlayerObjectsLock) 
-						{
-							game.LocalPlayerObjects = new List<PlayerObject> ();
-                            foreach (string s in sPlayerObjects)
-                            {
-                                if (s.Length > 0)
-                                {
-                                    PlayerObject po = new PlayerObject(s);
-                                    game.LocalPlayerObjects.Add (po);
-                                    Informer.SetDebugString(po.Position.x.ToString());
-                                }
-                            }
-						}
+                        //Initializes data in the state
+                        tempState.GameStatusObject = new GameStatusObject(packet.stringData[0]);
 
-						List<string> sStaticObjects = packet.stringData[2].Split('|').ToList();
-						lock (game.LocalStaticObjectsLock) 
-						{
-							game.LocalStaticObjects = new List<StaticObject> ();
-                            foreach (string s in sStaticObjects)
+                        tempState.PlayerObjects = new List<PlayerObject>();
+                        foreach(string s in packet.stringData[1].Split('|'))
+                        {
+                            if (s.Length > 0)
                             {
-                                if (s.Length > 0)
-                                {
-                                    //game.LocalStaticObjects.Add (new StaticObject (s));
-                                }
+                                tempState.PlayerObjects.Add(new PlayerObject(s));
                             }
-						}
+                        }
 
-						List<string> sDynamicObjects = packet.stringData[3].Split('|').ToList();
-						lock (game.LocalDynamicObjectsLock) 
-						{
-							game.LocalDynamicObjects = new List<DynamicObject> ();
-                            foreach (string s in sDynamicObjects)
+                        tempState.StaticObjects = new List<StaticObject>();
+                        foreach (string s in packet.stringData[2].Split('|'))
+                        {
+                            if (s.Length > 0)
                             {
-                                if (s.Length > 0)
-                                {
-                                    //game.LocalDynamicObjects.Add (new DynamicObject (s));
-                                }
+                                tempState.StaticObjects.Add(new StaticObject(s));
                             }
-						}
+                        }
+
+                        tempState.DynamicObjects = new List<DynamicObject>();
+                        foreach (string s in packet.stringData[3].Split('|'))
+                        {
+                            if (s.Length > 0)
+                            {
+                                tempState.DynamicObjects.Add(new DynamicObject(s));
+                            }
+                        }
+
+                        //exchange data
+                        lock (game.ServerStateLock)
+                        {
+                            game.OldServerState = game.MidServerState;
+                            game.MidServerState = game.NewServerState;
+                            game.NewServerState = tempState;
+                        }
                     }
                     break;
 
