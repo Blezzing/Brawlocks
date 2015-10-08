@@ -74,5 +74,13 @@ namespace CommonLibrary
         {
             return new Vector2(v1.x * v2, v1.y * v2);
         }
+
+        public float Lenght
+        {
+            get 
+            { 
+                return (float)Math.Sqrt(((x * x) + (y * y))); 
+            }
+        }
     }
 }

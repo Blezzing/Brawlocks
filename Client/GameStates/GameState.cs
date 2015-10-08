@@ -6,15 +6,18 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using CommonLibrary;
 using Client.GameObjects;
+using Client.Core;
 
 namespace Client
 {
     class GameState : IState
     {
-        Game game;
+        private Game game;
 
-        CommonLibrary.Vector2 oldInputDirection = new CommonLibrary.Vector2();
-        CommonLibrary.Vector2 newInputDirection = new CommonLibrary.Vector2();
+        private CommonLibrary.Vector2 oldInputDirection = new CommonLibrary.Vector2();
+        private CommonLibrary.Vector2 newInputDirection = new CommonLibrary.Vector2();
+
+        private ServerState checkState = new ServerState();
 
         public GameState(Game owner)
         {
@@ -24,9 +27,23 @@ namespace Client
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
-            //Player controls
+            HandleControls();
+            HandleExtrapolation();
+        }
+
+        public void OnRenderFrame(FrameEventArgs e)
+        {
+
+            RenderBackground();
+            RenderObjects();
+            RenderGUI();
+        }
+
+        #region Update Methods
+        private void HandleControls()
+        {
             var keyboardState = OpenTK.Input.Keyboard.GetState();
-            newInputDirection = new CommonLibrary.Vector2(0, 0);
+            newInputDirection = new CommonLibrary.Vector2();
             if (keyboardState[game.playerControls.MoveUp])
             {
                 newInputDirection.x += 1;
@@ -42,7 +59,7 @@ namespace Client
             if (keyboardState[game.playerControls.MoveRight])
             {
                 newInputDirection.y += 1;
-            }   
+            }
 
             if (newInputDirection != oldInputDirection)
             {
@@ -51,36 +68,46 @@ namespace Client
             }
         }
 
-        public void OnRenderFrame(FrameEventArgs e)
+        private void HandleExtrapolation()
         {
-            //Tegn efter GAME_VIEW
-            game.CurrentView = game.GAME_VIEW;
+        }
+        #endregion
 
-            //Tegner textures
+        #region Render Methods
+        private void RenderBackground()
+        {
+            game.CurrentView = game.GAME_VIEW;
             GraphicsTemplates.RenderBackground(game.Textures["ArenaBackground"]);
             GraphicsTemplates.RenderArena(0, 0, 1.5, game.Textures["ArenaFloor"]);
-
-			lock (game.ServerStateLock) 
-			{
-				foreach (PlayerObject po in game.NewServerState.PlayerObjects) 
-				{
-					GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
-				}
-			}
-            //Tegn efter GUI_VIEW
-            game.CurrentView = game.GUI_VIEW;
-
-            //MAKE GUI xD
         }
 
+        private void RenderObjects()
+        {
+            game.CurrentView = game.GAME_VIEW;
+            lock (game.ServerStateLock)
+            {
+                foreach (PlayerObject po in game.NewServerState.PlayerObjects)
+                {
+                    GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
+                }
+            }
+        }
+
+        private void RenderGUI()
+        {
+            game.CurrentView = game.GUI_VIEW;
+        }
+        #endregion
+
+        #region OnXXX Methods
         public void OnMouseDown(MouseButtonEventArgs e)
         {
-            
+
         }
 
         public void OnKeyDown(KeyboardKeyEventArgs e)
         {
-            
+
         }
 
         public void OnMouseWheel(MouseWheelEventArgs e)
@@ -90,5 +117,7 @@ namespace Client
             else if (e.DeltaPrecise < 0)
                 game.GAME_VIEW.zoom -= 0.05;
         }
+        #endregion
+
     }
 }
