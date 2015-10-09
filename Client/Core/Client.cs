@@ -2,6 +2,7 @@
 using CommonLibrary.Debug;
 using Client.GameObjects;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -26,6 +27,7 @@ namespace Client
 
         //Game field
         private static Game game;
+        public static Stopwatch GlobalTimer = new Stopwatch();
         
         //Debug handler
         public static ConsoleHandler Informer = new ConsoleHandler();
@@ -37,7 +39,8 @@ namespace Client
         {
             //Prepare data
             SetupInformer();
-            
+            GlobalTimer.Start();
+
             //Start performing logic
             StartIncomingDataThread();
             StartGameWindowThread();
@@ -110,6 +113,8 @@ namespace Client
                                 tempState.DynamicObjects.Add(new DynamicObject(s));
                             }
                         }
+
+                        tempState.ContructionTime = GlobalTimer.Elapsed;
 
                         //exchange data
                         lock (game.ServerStateLock)

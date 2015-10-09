@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
@@ -19,6 +20,8 @@ namespace Client
 
         private ServerState checkState = new ServerState();
 
+        private List<PlayerObject> playerObjects = new List<PlayerObject>();
+
         public GameState(Game owner)
         {
             game = owner;
@@ -28,6 +31,7 @@ namespace Client
         public void OnUpdateFrame(FrameEventArgs e)
         {
             HandleControls();
+            HandleObjectLists();
             HandleExtrapolation();
         }
 
@@ -68,17 +72,31 @@ namespace Client
             }
         }
 
+        private void HandleObjectLists()
+        {
+            //Validate current idea
+            if (checkState != game.OldServerState)
+                lock (game.ServerStateLock)
+                {
+                    playerObjects = game.NewServerState.PlayerObjects;
+                }
+        }
+
         private void HandleExtrapolation()
         {
             //Validate current idea
             if (checkState != game.OldServerState)
             {
-                lock(game.ServerStateLock)
+                foreach (PlayerObject po in playerObjects)
                 {
-                    //Updates checkvalue
-                    checkState = game.OldServerState;
-
-                    //
+                        try
+                        {
+                            po.UpdatePositionFunction(game.OldServerState, game.MidServerState, game.NewServerState);
+                        }
+                        catch(NullReferenceException)
+                        {
+                            /*meh, it's almost expected at first */
+                        }
                 }
             }
         }
@@ -95,13 +113,13 @@ namespace Client
         private void RenderObjects()
         {
             game.CurrentView = game.GAME_VIEW;
-            lock (game.ServerStateLock)
+            
+            foreach (PlayerObject po in game.NewServerState.PlayerObjects)
             {
-                foreach (PlayerObject po in game.NewServerState.PlayerObjects)
-                {
-                    GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
-                }
+                if (po.PositionFunction != null)
+                    GraphicsTemplates.RenderPlayer(po.ExtrapolatedPosition, game.Textures["Player"]);
             }
+            
         }
 
         private void RenderGUI()

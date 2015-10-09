@@ -9,6 +9,7 @@ namespace Client.Core
 {
     public class ServerState
     {
+        public TimeSpan ContructionTime;
         public GameStatusObject GameStatusObject = new GameStatusObject();
         public List<PlayerObject> PlayerObjects = new List<PlayerObject>();
         public List<DynamicObject> DynamicObjects = new List<DynamicObject>();
