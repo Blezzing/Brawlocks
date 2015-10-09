@@ -10,14 +10,8 @@ namespace CommonLibrary.Representation
     {
         public Vector2 Position
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get;
+            set;
         }
 
         public AbstractDynamicObject()
