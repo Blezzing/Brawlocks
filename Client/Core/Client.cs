@@ -28,6 +28,7 @@ namespace Client
         //Game field
         private static Game game;
         public static Stopwatch GlobalTimer = new Stopwatch();
+        public static Stopwatch TimeSinceLastServerState = new Stopwatch();
         
         //Debug handler
         public static ConsoleHandler Informer = new ConsoleHandler();
@@ -114,7 +115,8 @@ namespace Client
                             }
                         }
 
-                        tempState.ContructionTime = GlobalTimer.Elapsed;
+                        tempState.TimeSinceLastServerState = TimeSinceLastServerState.Elapsed;
+                        TimeSinceLastServerState.Restart();
 
                         //exchange data
                         lock (game.ServerStateLock)
