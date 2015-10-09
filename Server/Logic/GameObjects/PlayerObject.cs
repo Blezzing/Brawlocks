@@ -8,7 +8,8 @@ namespace Server.Logic.GameObjects
 {
     public class PlayerObject : AbstractPlayerObject
     {
-        float accelerationConstant = 5f;
+        private const float AccelerationConstant = 5f;
+        private float _accelerationModifier = 5f;
 
         public PlayerObject()
             : base()
@@ -17,11 +18,9 @@ namespace Server.Logic.GameObjects
 
         public void UpdatePosition(Client.Input inputData, Stopwatch elapsedTime)
         {
-            Velocity += inputData.InputDirection.Normalize() * ((float)elapsedTime.ElapsedMilliseconds / 1000) * accelerationConstant;
             Position += Velocity * ((float)elapsedTime.ElapsedMilliseconds / 1000);
 
             //THIS SHOULD BE WORKED UPON -- i think it's good tho
-            Vector2 foo = Velocity * ((float)elapsedTime.ElapsedMilliseconds / 1000) * accelerationConstant;
             if (foo.Lenght > 0)
             {
                 Velocity -= foo;
@@ -30,6 +29,16 @@ namespace Server.Logic.GameObjects
             {
                 Velocity = new Vector2();
             }
+        }
+
+        public void AddForce()
+        {
+            //Eg, hit by an explotion or other impact spell of some kind
+        }
+
+        public void AccelerationModifier()
+        {
+            //Modify _accelerationModifier here
         }
     }
 }
