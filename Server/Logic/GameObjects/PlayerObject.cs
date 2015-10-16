@@ -18,14 +18,16 @@ namespace Server.Logic.GameObjects
 
         public void UpdatePosition(Client.Input inputData, Stopwatch elapsedTime)
         {
+            //Add force
+            Velocity += inputData.InputDirection.Normalize() * ((float)elapsedTime.ElapsedMilliseconds / 1000);
+
+            //Apply force
             Position += Velocity * ((float)elapsedTime.ElapsedMilliseconds / 1000);
 
-            //THIS SHOULD BE WORKED UPON -- i think it's good tho
-            if (foo.Lenght > 0)
-            {
-                Velocity -= foo;
-            }
-            else
+            //Apply counterforce
+            Velocity -= Velocity * 0.9995f * ((float)elapsedTime.ElapsedMilliseconds / 1000);
+
+            if (Velocity.Lenght <= 0.01f)
             {
                 Velocity = new Vector2();
             }
