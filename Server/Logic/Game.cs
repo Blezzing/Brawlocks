@@ -22,8 +22,8 @@ namespace Server.Logic
 
         //Variables for game logic
 		private Stopwatch currentElapsedTime = new Stopwatch();
-		private Timer updateClock;
-		private Timer publishClock;
+        private Timer updateClock = new Timer(20);
+		private Timer publishClock = new Timer(80);
 
 		//Clients associated with this game
 		public readonly List<Client> Clients;
@@ -43,11 +43,8 @@ namespace Server.Logic
                 playerObjects.Add(po);
             }
 
-			updateClock = new Timer(50);
 			updateClock.Elapsed += updateClock_Elapsed;
-
-			publishClock = new Timer(20);
-			publishClock.Elapsed += publishClock_Elapsed;
+            publishClock.Elapsed += publishClock_Elapsed;
         }
 
         /// <summary>

@@ -100,9 +100,5 @@ namespace Server
             }
         }
         #endregion
-
-        #region Surface Layer
-        //empty so far.
-        #endregion
     }
 }
