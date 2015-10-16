@@ -9,20 +9,15 @@ namespace Client.GameObjects
     {
         //0 Time point for extrapolation
         public Stopwatch LastUpdatePosition = new Stopwatch();
-        float T0 = 0f;
         public Func<Double, Vector2> PositionFunction;
         public Vector2 ExtrapolatedPosition
         {
-            get 
-            {
-                Client.Informer.SetDebugString(PositionFunction(LastUpdatePosition.Elapsed.TotalMilliseconds).x.ToString());
-                return PositionFunction((T0 + LastUpdatePosition.Elapsed.TotalMilliseconds)); 
-            }
+            get { return PositionFunction(LastUpdatePosition.Elapsed.TotalMilliseconds); }
         }
-
 
         public PlayerObject()
         {
+            LastUpdatePosition.Start();
         }
 
         public PlayerObject(String source)
@@ -30,13 +25,31 @@ namespace Client.GameObjects
         {
         }
 
+        /*
+        //Lineær extrapolation
+        public void UpdatePositionFunction(Core.ServerState sOld, Core.ServerState sMid, Core.ServerState sNew)
+        {
+            PlayerObject pMid = sMid.PlayerObjects.Find(po => po.ID == this.ID);
+            PlayerObject pNew = sNew.PlayerObjects.Find(po => po.ID == this.ID);
+
+            Vector2 posDif = pNew.Position - pMid.Position;
+            double timeDif = sNew.TimeSinceLastServerState.TotalMilliseconds;
+            Vector2 velocity = new Vector2((float)(posDif.x / timeDif),(float)(posDif.y / timeDif));
+
+            PositionFunction = (time) => {return Position+(velocity*(float)time);};
+    
+            LastUpdatePosition.Restart();
+        }
+        */
+
+
+        //Exponential extrapolation
         public void UpdatePositionFunction(Core.ServerState sOld, Core.ServerState sMid, Core.ServerState sNew)
         {
             float timeSinceSOld = (float)(sNew.TimeSinceLastServerState.TotalMilliseconds);
             float timeSinceSMid = (float)(sNew.TimeSinceLastServerState.TotalMilliseconds + sNew.TimeSinceLastServerState.TotalMilliseconds);
             float timeSinceSNew = (float)(sNew.TimeSinceLastServerState.TotalMilliseconds + sNew.TimeSinceLastServerState.TotalMilliseconds + sNew.TimeSinceLastServerState.TotalMilliseconds);
-            T0 = timeSinceSNew;
-            LastUpdatePosition.Restart();
+
 
             Func<Double, float> xFunction = OneAxisFunction(new Vector2(timeSinceSOld, sOld.PlayerObjects.Find(po => po.ID == this.ID).Position.x),
                                                           new Vector2(timeSinceSMid, sMid.PlayerObjects.Find(po => po.ID == this.ID).Position.x),
@@ -46,7 +59,8 @@ namespace Client.GameObjects
                                                           new Vector2(timeSinceSMid, sMid.PlayerObjects.Find(po => po.ID == this.ID).Position.y),
                                                           new Vector2(timeSinceSNew, sNew.PlayerObjects.Find(po => po.ID == this.ID).Position.y));
 
-            PositionFunction = (time) => { return new Vector2(xFunction(time), yFunction(time)); };
+            PositionFunction = (time) => { return new Vector2(xFunction(timeSinceSNew+time), yFunction(timeSinceSNew+time)); };
+            LastUpdatePosition.Restart();
         }
 
         private Func<Double, float> OneAxisFunction(Vector2 v1, Vector2 v2, Vector2 v3)
@@ -108,6 +122,8 @@ namespace Client.GameObjects
             return (input) => { return (float)(eq1[3] * input * input + eq2[3] * input + eq3[3]); }; 
         }
 
+
+
         static void Swap<T>(ref T lhs, ref T rhs)
         {
             T temp;
@@ -115,6 +131,7 @@ namespace Client.GameObjects
             lhs = rhs;
             rhs = temp;
         }
+
     }
 }
 

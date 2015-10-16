@@ -23,7 +23,7 @@ namespace Server.Logic
         //Variables for game logic
 		private Stopwatch currentElapsedTime = new Stopwatch();
         private Timer updateClock = new Timer(20);
-		private Timer publishClock = new Timer(100);
+		private Timer publishClock = new Timer(80);
 
 		//Clients associated with this game
 		public readonly List<Client> Clients;

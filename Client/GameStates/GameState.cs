@@ -91,6 +91,7 @@ namespace Client
                 {
                         try
                         {
+                            checkState = game.OldServerState;
                             po.UpdatePositionFunction(game.OldServerState, game.MidServerState, game.NewServerState);
                         }
                         catch(NullReferenceException)
@@ -118,6 +119,8 @@ namespace Client
             {
                 if (po.PositionFunction != null)
                     GraphicsTemplates.RenderPlayer(po.ExtrapolatedPosition, game.Textures["Player"]);
+                else
+                    GraphicsTemplates.RenderPlayer(po.Position, game.Textures["Player"]);
             }
             
         }
